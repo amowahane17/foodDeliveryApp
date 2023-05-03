@@ -66,7 +66,7 @@ export class Onbording extends Component<OnbordingProps, OnbordingState> {
   btnNextHandler = () => {
     const {currIndex} = this.state;
     if (currIndex < 3) {
-      const nextIndex = currIndex === data.length - 1 ? 0 : currIndex + 1;
+      const nextIndex = currIndex + 1;
       this.setState({currIndex: nextIndex});
     } else {
       this.props.navigation.navigate('Login');

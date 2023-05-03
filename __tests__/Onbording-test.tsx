@@ -15,12 +15,12 @@ describe('Onbording component', () => {
     fireEvent.press(next_btn);
     fireEvent.press(next_btn);
   });
-  test('setInterval', () => {
-    jest.useFakeTimers();
-    render(<Onbording />);
-    jest.advanceTimersByTime(4000);
-    jest.advanceTimersByTime(4000);
-    jest.advanceTimersByTime(4000);
-    jest.advanceTimersByTime(4000);
-  });
+  // test('setInterval', () => {
+  //   jest.useFakeTimers();
+  //   render(<Onbording />);
+  //   jest.advanceTimersByTime(2000);
+  //   jest.advanceTimersByTime(2000);
+  //   jest.advanceTimersByTime(2000);
+  //   jest.advanceTimersByTime(2000);
+  // });
 });

@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {Component} from 'react';
 import {height, width} from '../constants/ScreenDimentions';
 import PhoneInput from 'react-native-phone-number-input';
@@ -18,8 +25,27 @@ export class Login extends Component<LoginProps, LoginState> {
     super(props);
     this.state = {value: '', formattedValue: '', userToggle: true, code: ''};
   }
+  loginHandler = () => {
+    // if (this.state.userToggle) {
+    //   this.props.navigation.navigate('Location');
+    // }
+    // this.props.navigation.navigate('Location');
+
+    const {value, code} = this.state;
+    console.log(code);
+
+    const phoneReg = /^[6-9]\d{9}$/;
+    const passReg = /^\d{6}$/;
+    const isValidPhone = phoneReg.test(value);
+    const isValidPass = passReg.test(code);
+    if (isValidPass && isValidPhone) {
+      this.props.navigation.navigate('Location');
+    } else {
+      Alert.alert('Please Enter Valid Information');
+    }
+  };
   render() {
-    console.log(this.state.code);
+    // console.log(this.state.value);
 
     return (
       <ScrollView>
@@ -97,7 +123,9 @@ export class Login extends Component<LoginProps, LoginState> {
                 <Text style={{marginLeft: '7%'}}>Seller</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => this.loginHandler()}>
               <Text style={styles.logText}>LOGIN</Text>
             </TouchableOpacity>
             <Text

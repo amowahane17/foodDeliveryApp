@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {height, width} from '../constants/ScreenDimentions';
 import PhoneInput from 'react-native-phone-number-input';
@@ -16,13 +17,59 @@ interface RegisterProps {
 }
 interface RegisterState {
   tickToggle: boolean;
+  phone: string;
+  email: string;
+  passcode: string;
+  confirmPasscode: string;
+  _state: string;
+  name: string;
 }
 const states = ['Maharashtra', 'Telangana', 'Gujrat', 'Rajasthan'];
 export class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {
     super(props);
-    this.state = {tickToggle: false};
+    this.state = {
+      tickToggle: false,
+      phone: '',
+      email: '',
+      passcode: '',
+      confirmPasscode: '',
+      _state: '',
+      name: '',
+    };
   }
+  submitHandler = () => {
+    const {phone, email, tickToggle, passcode, confirmPasscode, _state, name} =
+      this.state;
+    const phoneReg = /^[6-9]\d{9}$/;
+    const passReg = /^\d{6}$/;
+    const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    const isEmailValid = emailReg.test(email);
+    const isPhoneValid = phoneReg.test(phone);
+    const isPassValid = passReg.test(passcode);
+    const isConfirmPassValid = passReg.test(confirmPasscode);
+    const isMatching = passcode === confirmPasscode;
+    const isNameValid = name.length > 2 && name !== '';
+    const isStateValid = _state !== '';
+
+    if (tickToggle) {
+      if (
+        isEmailValid &&
+        isPassValid &&
+        isPhoneValid &&
+        isConfirmPassValid &&
+        isMatching &&
+        isNameValid &&
+        isStateValid
+      ) {
+        this.props.navigation.navigate('Otp');
+      } else {
+        Alert.alert('Please enter valid details');
+      }
+    } else {
+      Alert.alert('Please accept terms and conditons');
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -44,6 +91,8 @@ export class Register extends Component<RegisterProps, RegisterState> {
               placeholder="name"
               style={styles.inputBox}
               placeholderTextColor="black"
+              value={this.state.name}
+              onChangeText={event => this.setState({name: event})}
             />
             <Image
               style={styles.icon}
@@ -54,7 +103,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
             containerStyle={styles.containerStyle}
             // value={this.state.value}
             defaultCode="IN"
-            // onChangeText={event => this.setState({value: event})}
+            onChangeText={event => this.setState({phone: event})}
             // autoFocus
             placeholder="Mobile no"
             // codeTextStyle={{fontSize: 24}}
@@ -67,6 +116,8 @@ export class Register extends Component<RegisterProps, RegisterState> {
               placeholder="email Id"
               style={styles.inputBox}
               placeholderTextColor="black"
+              value={this.state.email}
+              onChangeText={event => this.setState({email: event})}
             />
             <Image
               style={styles.icon}
@@ -79,7 +130,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
             pinCount={6}
             // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
             onCodeChanged={code => {
-              this.setState({code});
+              this.setState({passcode: code});
             }}
             // autoFocusOnLoad
             codeInputFieldStyle={styles.codeIn}
@@ -96,7 +147,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
             pinCount={6}
             // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
             onCodeChanged={code => {
-              this.setState({code});
+              this.setState({confirmPasscode: code});
             }}
             // autoFocusOnLoad
             codeInputFieldStyle={styles.codeIn}
@@ -110,7 +161,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
           <SelectDropdown
             data={states}
             onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
+              this.setState({_state: selectedItem});
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
@@ -123,7 +174,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
               return item;
             }}
             defaultButtonText="State"
-            buttonTextStyle={{marginRight: '82%'}}
+            // buttonTextStyle={{marginRight: '70%'}}
             dropdownStyle={{width: '90%'}}
             buttonStyle={styles.buttonStyle}
             dropdownIconPosition="right"
@@ -148,7 +199,9 @@ export class Register extends Component<RegisterProps, RegisterState> {
             </TouchableOpacity>
             <Text style={styles.text}>Agree Terms & Conditions</Text>
           </View>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => this.submitHandler()}>
             <Text style={styles.logText}>REGISTER NOW</Text>
           </TouchableOpacity>
         </View>
