@@ -1,20 +1,26 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {Component} from 'react';
 import {height, width} from '../constants/ScreenDimentions';
 import PhoneInput from 'react-native-phone-number-input';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import {ScrollView} from 'react-native-gesture-handler';
-interface LoginProps {}
+interface LoginProps {
+  navigation?: any;
+}
 interface LoginState {
   value: string;
   formattedValue: string;
+  userToggle: boolean;
+  code: string;
 }
 export class Login extends Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
-    this.state = {value: '', formattedValue: ''};
+    this.state = {value: '', formattedValue: '', userToggle: true, code: ''};
   }
   render() {
+    console.log(this.state.code);
+
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -42,7 +48,9 @@ export class Login extends Component<LoginProps, LoginState> {
               style={styles.passcode}
               pinCount={6}
               // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-              // onCodeChanged = {code => { this.setState({code})}}
+              onCodeChanged={code => {
+                this.setState({code});
+              }}
               // autoFocusOnLoad
               codeInputFieldStyle={styles.codeIn}
               // codeInputHighlightStyle={{borderColor: 'black'}}
@@ -53,11 +61,50 @@ export class Login extends Component<LoginProps, LoginState> {
               placeholderCharacter="*"
             />
             <Text style={styles.forgot}>Forgot Passcode</Text>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={{height: 30, width: 30}}></View>
+            <View style={styles.xView}>
+              <View style={styles.cusSellView}>
+                <TouchableOpacity
+                  onPress={() => this.setState({userToggle: true})}
+                  style={
+                    this.state.userToggle ? styles.circle : styles.circleGrey
+                  }>
+                  <View
+                    style={
+                      this.state.userToggle
+                        ? styles.innerCircle
+                        : styles.innerCircleGrey
+                    }
+                  />
+                </TouchableOpacity>
+                <Text style={{marginLeft: '7%'}}>Customer</Text>
+              </View>
+              <View style={styles.cusSellView}>
+                <TouchableOpacity
+                  style={
+                    this.state.userToggle === false
+                      ? styles.circle
+                      : styles.circleGrey
+                  }
+                  onPress={() => this.setState({userToggle: false})}>
+                  <View
+                    style={
+                      this.state.userToggle === false
+                        ? styles.innerCircle
+                        : styles.innerCircleGrey
+                    }
+                  />
+                </TouchableOpacity>
+                <Text style={{marginLeft: '7%'}}>Seller</Text>
               </View>
             </View>
+            <TouchableOpacity style={styles.btn}>
+              <Text style={styles.logText}>LOGIN</Text>
+            </TouchableOpacity>
+            <Text
+              style={styles.register}
+              onPress={() => this.props.navigation.navigate('Register')}>
+              Register now?
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -65,6 +112,62 @@ export class Login extends Component<LoginProps, LoginState> {
   }
 }
 const styles = StyleSheet.create({
+  register: {
+    fontSize: 18,
+    alignSelf: 'center',
+    marginTop: '2%',
+    color: '#161A1D',
+  },
+  logText: {fontSize: 20, color: 'white', fontWeight: '600'},
+  btn: {
+    width: '90%',
+    height: 50,
+    backgroundColor: '#DF201F',
+    alignSelf: 'center',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '4%',
+  },
+  xView: {
+    flexDirection: 'row',
+    marginLeft: '2%',
+  },
+  cusSellView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  innerCircle: {
+    height: 8,
+    width: 8,
+    backgroundColor: 'red',
+    borderRadius: 4,
+  },
+  innerCircleGrey: {
+    height: 8,
+    width: 8,
+    backgroundColor: 'grey',
+    borderRadius: 4,
+  },
+  circle: {
+    height: 15,
+    width: 15,
+    borderRadius: 15,
+    borderWidth: 1.5,
+    borderColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleGrey: {
+    height: 15,
+    width: 15,
+    borderRadius: 15,
+    borderWidth: 1.5,
+    borderColor: 'grey',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   forgot: {
     color: '#DF201F',
     fontSize: 20,
