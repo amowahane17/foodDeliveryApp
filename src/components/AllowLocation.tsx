@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: '2%',
   },
-  container: {width, height},
+  container: {width, height, backgroundColor: 'white'},
   topView: {
     width,
     height: '80%',
