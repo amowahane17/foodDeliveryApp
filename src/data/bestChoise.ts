@@ -1,4 +1,4 @@
-export interface bestChoiseTypes {
+export interface BestChoiseTypes {
   id: string;
   img: any;
   name: string;
@@ -7,7 +7,7 @@ export interface bestChoiseTypes {
   color: string;
   sColor: string;
 }
-[];
+
 export const bestChoise = [
   {
     id: '1',

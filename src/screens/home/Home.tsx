@@ -6,18 +6,21 @@ import {
   Text,
   View,
   SafeAreaView,
-  ImageBackground,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
-import {itemsData, itemsDataTypes} from '../../data/itemsData';
+import {ItemsDataTypes, itemsData} from '../../data/itemsData';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {carouselData, carouselDataTypes} from '../../data/carouselData';
-import {bestChoise, bestChoiseTypes} from '../../data/bestChoise';
-import {todaySpecial, todaySpecialTypes} from '../../data/todaySpecial';
-import {restaurantData, restaurantDataTypes} from '../../data/restaurantData';
+import {CarouselDataTypes, carouselData} from '../../data/carouselData';
+import {bestChoise, BestChoiseTypes} from '../../data/bestChoise';
+import {TodaySpecialTypes, todaySpecial} from '../../data/todaySpecial';
+import {RestaurantDataTypes, restaurantData} from '../../data/restaurantData';
 import {ios} from '../../constants/Platform';
-interface HomeProps {}
+
+interface HomeProps {
+  navigation?: any;
+}
 interface HomeState {
   currIndex: number;
 }
@@ -29,21 +32,29 @@ export class Home extends Component<HomeProps, HomeState> {
     };
   }
 
-  itemsList = ({item}: {item: itemsDataTypes}) => {
+  itemsList = ({item}: {item: ItemsDataTypes}) => {
     return (
       <>
-        <View style={[styles.itemscard, {backgroundColor: item.color}]}>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('SingleItems', {catItem: item})
+          }
+          style={[styles.itemscard, {backgroundColor: item.color}]}>
           <Text style={styles.itemText}>{item.name}</Text>
           <Image source={item.img} />
-        </View>
+        </TouchableOpacity>
       </>
     );
   };
-  _renderItem = ({item}: {item: carouselDataTypes}) => {
+  _renderItem = ({item}: {item: CarouselDataTypes}) => {
     return (
-      <View style={{}}>
+      <TouchableOpacity
+        onPress={() =>
+          this.props.navigation.navigate('OfferItems', {offerItems: item})
+        }
+        style={{}}>
         <Image source={item.img} />
-        <Image
+        {/* <Image
           style={{position: 'absolute', top: '15%', left: '5%'}}
           source={item.text}
         />
@@ -54,11 +65,11 @@ export class Home extends Component<HomeProps, HomeState> {
         <Image
           style={{position: 'absolute', bottom: '8%', left: '46%'}}
           source={item.top_img}
-        />
-      </View>
+        /> */}
+      </TouchableOpacity>
     );
   };
-  bestChoiseList = ({item}: {item: bestChoiseTypes}) => {
+  bestChoiseList = ({item}: {item: BestChoiseTypes}) => {
     return (
       <>
         <View style={[styles.bestChoiseCards, {backgroundColor: item.color}]}>
@@ -79,7 +90,7 @@ export class Home extends Component<HomeProps, HomeState> {
       </>
     );
   };
-  todaySpecialList = ({item}: {item: todaySpecialTypes}) => {
+  todaySpecialList = ({item}: {item: TodaySpecialTypes}) => {
     return (
       <>
         <View style={styles.todaySpecialCards}>
@@ -103,7 +114,7 @@ export class Home extends Component<HomeProps, HomeState> {
     item,
     index,
   }: {
-    item: restaurantDataTypes;
+    item: RestaurantDataTypes;
     index: number;
   }) => {
     const isEnd = index === restaurantData.length - 1;
@@ -148,10 +159,14 @@ export class Home extends Component<HomeProps, HomeState> {
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.header}>
-              <Image
-                style={styles.profileImg}
-                source={require('../../assets/profile.png')}
-              />
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Profile')}>
+                <Image
+                  style={styles.profileImg}
+                  source={require('../../assets/profile.png')}
+                />
+              </TouchableOpacity>
+
               <View>
                 <Text style={styles.personName}>Hi, Sachin</Text>
                 <View style={styles.hTextView}>

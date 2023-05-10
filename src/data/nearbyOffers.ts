@@ -1,4 +1,4 @@
-export interface TodaySpecialTypes {
+export interface NearbyOffersTypes {
   id: string;
   img: any;
   name: string;
@@ -6,8 +6,7 @@ export interface TodaySpecialTypes {
   offPrice: number;
   restaurant: string;
 }
-
-export const todaySpecial = [
+export const nearbyOffers = [
   {
     id: '1',
     img: require('../assets/biryani.png'),
@@ -39,13 +38,5 @@ export const todaySpecial = [
     price: 60,
     offPrice: 80,
     restaurant: 'Saoji Bhojnalaya',
-  },
-  {
-    id: '5',
-    img: require('../assets/biryani.png'),
-    name: 'Best Veg Dum Biryani',
-    price: 100,
-    offPrice: 200,
-    restaurant: 'Golden Fish Restaurant',
   },
 ];

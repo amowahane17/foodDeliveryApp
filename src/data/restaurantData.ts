@@ -1,11 +1,11 @@
-export interface restaurantDataTypes {
+export interface RestaurantDataTypes {
   id: string;
   img: any;
   name: string;
   distance: number;
   address: string;
 }
-[];
+
 export const restaurantData = [
   {
     id: '1',
