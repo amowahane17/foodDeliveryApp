@@ -54,18 +54,6 @@ export class Home extends Component<HomeProps, HomeState> {
         }
         style={{}}>
         <Image source={item.img} />
-        {/* <Image
-          style={{position: 'absolute', top: '15%', left: '5%'}}
-          source={item.text}
-        />
-        <Image
-          style={{position: 'absolute', top: '56%', left: '5%'}}
-          source={item.top_img_two}
-        />
-        <Image
-          style={{position: 'absolute', bottom: '8%', left: '46%'}}
-          source={item.top_img}
-        /> */}
       </TouchableOpacity>
     );
   };
@@ -120,7 +108,11 @@ export class Home extends Component<HomeProps, HomeState> {
     const isEnd = index === restaurantData.length - 1;
     return (
       <>
-        <View style={styles.resCards}>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('NearbyRestaurant', {resData: item})
+          }
+          style={styles.resCards}>
           <Image style={styles.resImg} source={item.img} />
           <View style={styles.resName}>
             <Text style={styles.bestName}>{item.name}</Text>
@@ -141,7 +133,7 @@ export class Home extends Component<HomeProps, HomeState> {
             </View>
             <Text style={[styles.tRes, {fontSize: 16}]}>{item.address}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
         {isEnd && (
           <View style={styles.endCircle}>
             <Image
@@ -174,7 +166,13 @@ export class Home extends Component<HomeProps, HomeState> {
                     style={styles.pinImg}
                     source={require('../../assets/pin.png')}
                   />
-                  <Text style={styles.city}>Nagpur, Maharashtra</Text>
+                  <Text
+                    onPress={() =>
+                      this.props.navigation.navigate('SearchLocation')
+                    }
+                    style={styles.city}>
+                    Nagpur, Maharashtra
+                  </Text>
                 </View>
               </View>
               <Image
@@ -227,10 +225,12 @@ export class Home extends Component<HomeProps, HomeState> {
             <View style={styles.todaysSpecial}>
               <View style={styles.todayTexts}>
                 <Text style={styles.bestText}>Today Special</Text>
-                <View style={styles.innerTexts}>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('TodaySpecial')}
+                  style={styles.innerTexts}>
                   <Text style={styles.viewAll}>View All</Text>
                   <Image source={require('../../assets/greenRightArrow.png')} />
-                </View>
+                </TouchableOpacity>
               </View>
 
               <FlatList
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 126,
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: 15,
     flexDirection: 'row',
     elevation: 10,
     shadowOffset: {width: -2, height: 4},

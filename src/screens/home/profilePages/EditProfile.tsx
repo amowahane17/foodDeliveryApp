@@ -18,12 +18,14 @@ export class EditProfile extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.innerHeaderView}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.goBack()}
+            style={styles.innerHeaderView}>
+            <View>
               <Image source={require('../../../assets/backArrow.png')} />
-            </TouchableOpacity>
+            </View>
             <Text style={styles.heading}>Edit Profile</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <SafeAreaView style={{width}}>
           <ScrollView showsVerticalScrollIndicator={false}>

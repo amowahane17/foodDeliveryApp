@@ -14,6 +14,10 @@ import Favorite from '../screens/home/profilePages/Favorite';
 import SingleItems from '../screens/home/homePages/SingleItems';
 import ItemInfo from '../screens/home/homePages/ItemInfo';
 import OfferItems from '../screens/home/homePages/OfferItems';
+import SearchLocation from '../screens/home/homePages/SearchLocation';
+import TodaySpecial from '../screens/home/homePages/TodaySpecial';
+import NearbyRestaurant from '../screens/home/homePages/NearbyRestaurant';
+import Phone from '../components/Phone';
 
 const Stack = createStackNavigator();
 
@@ -21,7 +25,7 @@ export class AuthNav extends Component {
   render() {
     return (
       <Stack.Navigator
-        initialRouteName="Tabs"
+        initialRouteName="Login"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onbording" component={Onbording} />
@@ -37,6 +41,9 @@ export class AuthNav extends Component {
         <Stack.Screen name="SingleItems" component={SingleItems} />
         <Stack.Screen name="ItemInfo" component={ItemInfo} />
         <Stack.Screen name="OfferItems" component={OfferItems} />
+        <Stack.Screen name="SearchLocation" component={SearchLocation} />
+        <Stack.Screen name="TodaySpecial" component={TodaySpecial} />
+        <Stack.Screen name="NearbyRestaurant" component={NearbyRestaurant} />
       </Stack.Navigator>
     );
   }

@@ -16,12 +16,14 @@ export class Order extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.innerHeaderView}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity
+            style={styles.innerHeaderView}
+            onPress={() => this.props.navigation.goBack()}>
+            <View>
               <Image source={require('../../../assets/backArrow.png')} />
-            </TouchableOpacity>
+            </View>
             <Text style={styles.heading}>Order</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <SafeAreaView style={{width}}>
           <ScrollView showsVerticalScrollIndicator={false}>

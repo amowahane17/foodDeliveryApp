@@ -9,11 +9,16 @@ import {
   Alert,
   SafeAreaView,
   ScrollView,
+  FlatList,
+  Modal,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
 import PhoneInput from 'react-native-phone-number-input';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import SelectDropdown from 'react-native-select-dropdown';
+import {colors} from '../../constants/Colors';
+import {codeData} from '../../data/codeData';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 interface RegisterProps {
   navigation?: any;
 }
@@ -25,6 +30,9 @@ interface RegisterState {
   confirmPasscode: string;
   _state: string;
   name: string;
+  selectedIndex: null | number;
+  codeModalToggle: boolean;
+  confirm: null | FirebaseAuthTypes.ConfirmationResult;
 }
 const states = ['Maharashtra', 'Telangana', 'Gujrat', 'Rajasthan'];
 export class Register extends Component<RegisterProps, RegisterState> {
@@ -38,9 +46,36 @@ export class Register extends Component<RegisterProps, RegisterState> {
       confirmPasscode: '',
       _state: '',
       name: '',
+      selectedIndex: null,
+      codeModalToggle: false,
+      confirm: null,
     };
   }
-  submitHandler = () => {
+  onAuthStateChanged = user => {
+    if (user) {
+      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+    }
+  };
+  componentDidMount = () => {
+    const subscriber = auth().onAuthStateChanged(this.onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  };
+  signInWithPhoneNumber = async (phoneNumber: string) => {
+    console.log('this is signinphone', phoneNumber);
+
+    const confirmation = await auth().createUserWithEmailAndPassword(
+      'shuhamsarode435@gmail.com',
+      '123456',
+    );
+    this.setState({confirm: confirmation}, () => {
+      console.log('this is confirmaiton', this.state.confirm);
+    });
+  };
+
+  submitHandler = async () => {
     const {phone, email, tickToggle, passcode, confirmPasscode, _state, name} =
       this.state;
     const phoneReg = /^[6-9]\d{9}$/;
@@ -64,7 +99,26 @@ export class Register extends Component<RegisterProps, RegisterState> {
         isNameValid &&
         isStateValid
       ) {
-        this.props.navigation.navigate('Otp');
+        if (!this.state.confirm) {
+          const l = `${
+            this.state.selectedIndex === null
+              ? codeData[0].code
+              : codeData[this.state.selectedIndex].code
+          } ${phone}`;
+          await this.signInWithPhoneNumber(l);
+
+          console.log(
+            `${
+              this.state.selectedIndex === null
+                ? codeData[0].code
+                : codeData[this.state.selectedIndex].code
+            } ${phone}`,
+          );
+          console.log('this is l', l);
+        }
+        this.props.navigation.navigate('Otp', {
+          confirmParam: this.state.confirm,
+        });
       } else {
         Alert.alert('Please enter valid details');
       }
@@ -107,7 +161,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                   source={require('../../assets/person.png')}
                 />
               </View>
-              <PhoneInput
+              {/* <PhoneInput
                 //@ts-ignore
                 testID="phoneInputReg"
                 containerStyle={styles.containerStyle}
@@ -119,18 +173,58 @@ export class Register extends Component<RegisterProps, RegisterState> {
                 // codeTextStyle={{fontSize: 24}}
                 textInputStyle={{height: 50}}
                 codeTextStyle={{height: 20}}
-              />
+              /> */}
+              <View style={styles.phoneInputContainer}>
+                <TouchableOpacity
+                  onPress={() => this.setState({codeModalToggle: true})}
+                  style={styles.countryCodeView}>
+                  <Image
+                    style={{width: 30, height: 30}}
+                    source={
+                      this.state.selectedIndex === null
+                        ? codeData[0].img
+                        : codeData[this.state.selectedIndex].img
+                    }
+                  />
+                  <Text style={styles.countryCodeText}>
+                    {this.state.selectedIndex === null
+                      ? codeData[0].code
+                      : codeData[this.state.selectedIndex].code}
+                  </Text>
+                  <Image
+                    style={{marginLeft: '5%'}}
+                    source={require('../../assets/modalOpenArrow.png')}
+                  />
+                </TouchableOpacity>
+                <View style={styles.verticalLine} />
+                <View style={styles.phoneInputBoxView}>
+                  <TextInput
+                    placeholder="mobile no"
+                    placeholderTextColor={colors.black}
+                    style={styles.phoneInputBox}
+                    onChangeText={event => this.setState({phone: event})}
+                  />
+                  <Image
+                    style={{
+                      position: 'absolute',
+                      right: 25,
+                      tintColor: 'grey',
+                    }}
+                    source={require('../../assets/phone.png')}
+                  />
+                </View>
+              </View>
               <View style={styles.line} />
               <View style={styles.inputBoxView}>
                 <TextInput
                   placeholder="email Id"
                   style={styles.inputBox}
-                  placeholderTextColor="black"
+                  placeholderTextColor={colors.black}
                   value={this.state.email}
                   onChangeText={event => this.setState({email: event})}
                 />
                 <Image
-                  style={styles.icon}
+                  style={[styles.icon, {right: 22}]}
                   source={require('../../assets/email.png')}
                 />
               </View>
@@ -224,12 +318,133 @@ export class Register extends Component<RegisterProps, RegisterState> {
               </TouchableOpacity>
             </View>
           </View>
+          <Modal
+            onRequestClose={() => this.setState({codeModalToggle: false})}
+            visible={this.state.codeModalToggle}>
+            <SafeAreaView>
+              <View style={styles.codeModalView}>
+                <View style={styles.modalSearchBar}>
+                  <TouchableOpacity
+                    onPress={() => this.setState({codeModalToggle: false})}>
+                    <Image source={require('../../assets/cross.png')} />
+                  </TouchableOpacity>
+                  <TextInput
+                    style={{width: '70%', marginLeft: '5%'}}
+                    placeholder="Enter Country Name"
+                  />
+                </View>
+                <FlatList
+                  data={codeData}
+                  renderItem={({item, index}) => {
+                    return (
+                      <>
+                        <TouchableOpacity
+                          style={styles.selectCode}
+                          onPress={() =>
+                            this.setState({
+                              selectedIndex: index,
+                              codeModalToggle: false,
+                            })
+                          }>
+                          <Image
+                            style={{height: 30, width: 30}}
+                            source={item.img}
+                          />
+                          <Text style={styles.countryName}>{item.name}</Text>
+                          <Text style={styles.countryCodeModal}>
+                            ({item.code})
+                          </Text>
+                        </TouchableOpacity>
+                        <View style={styles.modalLine} />
+                      </>
+                    );
+                  }}
+                  keyExtractor={item => item.id}
+                />
+              </View>
+            </SafeAreaView>
+          </Modal>
         </SafeAreaView>
       </ScrollView>
     );
   }
 }
 const styles = StyleSheet.create({
+  modalSearchBar: {
+    width: '90%',
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '5%',
+  },
+  modalLine: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.borderColor,
+    marginBottom: '2%',
+    marginTop: '2%',
+  },
+  countryCodeModal: {
+    fontSize: 18,
+    color: colors.black,
+    marginLeft: '2%',
+    fontWeight: '600',
+  },
+  countryName: {
+    fontSize: 18,
+    color: colors.black,
+    marginLeft: '4%',
+    fontWeight: '600',
+  },
+  selectCode: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '90%',
+  },
+  codeModalView: {
+    backgroundColor: 'white',
+    height,
+    width,
+    alignSelf: 'center',
+    padding: 20,
+  },
+  phoneInputBox: {
+    width: '100%',
+    fontWeight: '600',
+    color: colors.black,
+    fontSize: 18,
+    paddingLeft: 20,
+    paddingRight: 60,
+  },
+  phoneInputBoxView: {flexDirection: 'row', alignItems: 'center', width: '70%'},
+  verticalLine: {
+    width: 1,
+    height: 26,
+    backgroundColor: '#E8E8E8',
+    alignSelf: 'center',
+  },
+  countryCodeText: {
+    color: colors.black,
+    fontSize: 18,
+    fontWeight: '600',
+    marginLeft: '3%',
+  },
+  countryCodeView: {
+    height: '100%',
+    width: '30%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: '3%',
+  },
+  phoneInputContainer: {
+    width: '90%',
+    height: 60,
+    marginTop: '5%',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#E8E8E8',
+  },
   logText: {
     fontSize: 20,
     color: 'white',
@@ -282,7 +497,7 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8E8',
   },
   codeIn: {
-    borderColor: 'grey',
+    borderColor: colors.borderColor,
     borderRadius: 10,
     height: 60,
     color: 'black',
@@ -312,7 +527,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     width: '90%',
   },
-  icon: {position: 'absolute', right: '5%', tintColor: 'grey'},
+  icon: {position: 'absolute', right: 25, tintColor: 'grey'},
   inputBoxView: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -324,8 +539,11 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8E8',
     width: '90%',
     alignSelf: 'center',
-    fontSize: 20,
-    height: 45,
+    fontWeight: '600',
+    color: colors.black,
+    fontSize: 18,
+    height: 60,
+    paddingLeft: 20,
   },
   registerView: {height: '80%', width},
   register: {
@@ -342,6 +560,6 @@ const styles = StyleSheet.create({
     bottom: '45%',
   },
   container: {height, width, backgroundColor: 'white'},
-  topView: {height: '20%', width},
+  topView: {height: '17%', width},
 });
 export default Register;

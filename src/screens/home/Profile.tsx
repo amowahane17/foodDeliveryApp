@@ -19,12 +19,14 @@ export class Profile extends Component<ProfileProps, ProfileState> {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.innerHeaderView}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity
+            style={styles.innerHeaderView}
+            onPress={() => this.props.navigation.goBack()}>
+            <View>
               <Image source={require('../../assets/backArrow.png')} />
-            </TouchableOpacity>
+            </View>
             <Text style={styles.heading}>Profile</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <SafeAreaView>
           <View style={{width}}>
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   line: {
     width: '90%',
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: 100,
     borderRightWidth: 1,
-    borderColor: '#303235',
+    borderColor: colors.borderColor,
   },
   middleCard: {
     width: '90%',
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: '5%',
     flexDirection: 'row',
-    padding: 28,
+    padding: 25,
     justifyContent: 'space-evenly',
   },
   address: {

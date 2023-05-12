@@ -10,6 +10,20 @@ import {
 import {height, width} from '../../constants/ScreenDimentions';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 export class Otp extends Component {
+  constructor() {
+    super();
+    this.state = {code: ''};
+  }
+  confirmCode = async () => {
+    const {confirmParam} = this.props.route.params;
+    console.log('this is param', confirmParam);
+    try {
+      const l = await confirmParam.confirm(this.state.code);
+      console.log('succsess', l);
+    } catch (error) {
+      console.log('Invalid code.', error);
+    }
+  };
   render() {
     return (
       <ImageBackground
@@ -26,11 +40,11 @@ export class Otp extends Component {
           <OTPInputView
             // testID="otp"
             style={styles.passcode}
-            pinCount={4}
+            pinCount={6}
             // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-            // onCodeChanged={code => {
-            //   this.setState({code});
-            // }}
+            onCodeChanged={code => {
+              this.setState({code});
+            }}
             // autoFocusOnLoad
             codeInputFieldStyle={styles.codeIn}
             // codeInputHighlightStyle={{borderColor: 'black'}}
@@ -46,7 +60,9 @@ export class Otp extends Component {
           </View>
         </View>
         <View style={styles.btnView}>
-          <TouchableOpacity style={styles.nbtn}>
+          <TouchableOpacity
+            style={styles.nbtn}
+            onPress={() => this.confirmCode()}>
             <Text style={styles.logText}>SUBMIT</Text>
           </TouchableOpacity>
         </View>
