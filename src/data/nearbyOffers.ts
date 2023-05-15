@@ -8,7 +8,7 @@ export interface NearbyOffersTypes {
 }
 export const nearbyOffers = [
   {
-    id: '1',
+    id: '103',
     img: require('../assets/biryani.png'),
     name: 'Best Veg Dum Biryani',
     price: 100,
@@ -16,7 +16,7 @@ export const nearbyOffers = [
     restaurant: 'Golden Fish Restaurant',
   },
   {
-    id: '2',
+    id: '104',
     img: require('../assets/tikka.png'),
     name: 'Chicken Tikka',
     price: 80,
@@ -24,7 +24,7 @@ export const nearbyOffers = [
     restaurant: 'Barbeque Nation',
   },
   {
-    id: '3',
+    id: '105',
     img: require('../assets/todayPizza.png'),
     name: 'Pizza',
     price: 90,
@@ -32,7 +32,7 @@ export const nearbyOffers = [
     restaurant: 'Naivedhyam Restaurant',
   },
   {
-    id: '4',
+    id: '106',
     img: require('../assets/dumBiryani.png'),
     name: 'Chicken Biryani',
     price: 60,

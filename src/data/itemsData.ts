@@ -7,37 +7,37 @@ export interface ItemsDataTypes {
 
 export const itemsData = [
   {
-    id: '1',
+    id: '97',
     name: 'Pizza',
     img: require('../assets/pizza.png'),
     color: '#FE5656',
   },
   {
-    id: '2',
+    id: '98',
     name: 'Burger',
     img: require('../assets/burger.png'),
     color: '#FFC268',
   },
   {
-    id: '3',
+    id: '99',
     name: 'Chicken',
     img: require('../assets/chickenBuk.png'),
     color: '#FE5656',
   },
   {
-    id: '4',
+    id: '100',
     name: 'Veg Roll',
     img: require('../assets/vegRoll.png'),
     color: '#FFC268',
   },
   {
-    id: '5',
+    id: '101',
     name: 'Drink',
     img: require('../assets/cola.png'),
     color: '#FE5656',
   },
   {
-    id: '6',
+    id: '102',
     name: 'Veg',
     img: require('../assets/veg.png'),
     color: '#FFC268',

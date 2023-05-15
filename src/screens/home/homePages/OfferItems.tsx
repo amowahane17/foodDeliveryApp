@@ -11,9 +11,12 @@ import {
 } from 'react-native';
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
+import {CartContext} from '../../../GlobalState';
 
 export class OfferItems extends Component {
+  static contextType = CartContext;
   itemList = ({item}) => {
+    const {addItemInCart} = this.context;
     return (
       <View style={[styles.bestChoiseCards, {backgroundColor: item.color}]}>
         <Image style={styles.img} source={item.img} />
@@ -23,12 +26,14 @@ export class OfferItems extends Component {
           <Image source={require('../../../assets/dish.png')} />
           <Text style={styles.bestRes}>{item.restaurent}</Text>
         </View>
-        <View style={[styles.circle, {shadowColor: item.sColor}]}>
+        <TouchableOpacity
+          onPress={() => addItemInCart(item)}
+          style={[styles.circle, {shadowColor: item.sColor}]}>
           <Image
             style={styles.plus}
             source={require('../../../assets/plus.png')}
           />
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };

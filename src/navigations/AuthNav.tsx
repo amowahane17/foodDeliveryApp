@@ -17,16 +17,13 @@ import OfferItems from '../screens/home/homePages/OfferItems';
 import SearchLocation from '../screens/home/homePages/SearchLocation';
 import TodaySpecial from '../screens/home/homePages/TodaySpecial';
 import NearbyRestaurant from '../screens/home/homePages/NearbyRestaurant';
-import Phone from '../components/Phone';
 
 const Stack = createStackNavigator();
 
 export class AuthNav extends Component {
   render() {
     return (
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{headerShown: false}}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onbording" component={Onbording} />
         <Stack.Screen name="Login" component={Login} />

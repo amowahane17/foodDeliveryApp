@@ -73,9 +73,9 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
           </View>
           <View style={styles.bottomView}>
             <View style={styles.textView}>
-              <Text style={styles.name}>{paramItem.item_name}</Text>
+              <Text style={styles.name}>{paramItem.name}</Text>
               <Text style={styles.price}>
-                ₹{paramItem.item_price}
+                ₹{paramItem.price}
                 {'  '}
                 <Text style={styles.offPrice}>₹{paramItem.off_price}</Text>
               </Text>
@@ -104,7 +104,7 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
                       <Image source={require('../../../assets/minus.png')} />
                     </TouchableOpacity>
                     <View style={styles.middleQuantity}>
-                      <Text style={styles.qNum}>1</Text>
+                      <Text style={styles.qNum}>{paramItem.quantity}</Text>
                     </View>
                     <TouchableOpacity style={styles.plus}>
                       <Image source={require('../../../assets/plu.png')} />

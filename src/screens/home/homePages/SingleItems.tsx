@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  StatusBar,
   FlatList,
   ScrollView,
 } from 'react-native';
@@ -14,28 +13,35 @@ import {ios} from '../../../constants/Platform';
 import {height, width} from '../../../constants/ScreenDimentions';
 import {colors} from '../../../constants/Colors';
 import {categoryData} from '../../../data/categoryData';
+import {CartContext} from '../../../GlobalState';
 
 export class SingleItems extends Component {
+  static contextType = CartContext;
+
   categoryList = ({item, index}) => {
     const {catItem} = this.props.route.params;
+    console.log(catItem, 'catItem');
+
     const i = categoryData.findIndex(ele => {
-      return ele.id === catItem.id;
+      return ele.name === catItem.name;
     });
+    const {addItemInCart} = this.context;
     return (
       <TouchableOpacity
         onPress={() =>
           this.props.navigation.navigate('ItemInfo', {singleItem: item})
         }
-        style={[styles.cards, {backgroundColor: categoryData[i].color}]}>
-        <Image style={styles.img} source={item.item_img} />
+        style={[styles.cards, {backgroundColor: categoryData[i]?.color}]}>
+        <Image style={styles.img} source={item.img} />
         <View style={styles.cardMiddleView}>
-          <Text style={styles.name}>{item.item_name}</Text>
+          <Text style={styles.name}>{item.name}</Text>
           <Text style={{fontSize: 20, fontWeight: '600', color: 'red'}}>
-            ₹{item.item_price}
+            ₹{item.price}
           </Text>
         </View>
         <TouchableOpacity
-          style={[styles.circle, {shadowColor: categoryData[i].sColor}]}>
+          onPress={() => addItemInCart(item)}
+          style={[styles.circle, {shadowColor: categoryData[i]?.sColor}]}>
           <Image
             style={styles.plus}
             source={require('../../../assets/plus.png')}
@@ -47,12 +53,13 @@ export class SingleItems extends Component {
   render() {
     const {catItem} = this.props.route.params;
     const index = categoryData.findIndex(ele => {
-      return ele.id === catItem.id;
+      return ele.name === catItem.name;
     });
+    console.log(index);
 
     return (
       <SafeAreaView
-        style={[styles.container, {backgroundColor: catItem.color}]}>
+        style={[styles.container, {backgroundColor: catItem?.color}]}>
         {/* <StatusBar backgroundColor={catItem.color} /> */}
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -63,7 +70,7 @@ export class SingleItems extends Component {
                   onPress={() => this.props.navigation.goBack()}>
                   <Image source={require('../../../assets/backArrow.png')} />
                 </TouchableOpacity>
-                <Text style={styles.itemName}>{categoryData[index].name}</Text>
+                <Text style={styles.itemName}>{categoryData[index]?.name}</Text>
               </View>
               <View style={styles.secondView}>
                 <Image source={require('../../../assets/pizzaCat.png')} />
@@ -71,7 +78,7 @@ export class SingleItems extends Component {
             </View>
             <View style={styles.itemsContainer}>
               <FlatList
-                data={categoryData[index].items}
+                data={categoryData[index]?.items}
                 renderItem={this.categoryList}
                 // keyExtractor={item => item.id}
                 numColumns={2}

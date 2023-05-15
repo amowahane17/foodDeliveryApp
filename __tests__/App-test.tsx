@@ -8,6 +8,7 @@ import React from 'react';
 jest.mock('react-native-phone-number-input', () => 'PhoneInput');
 jest.mock('@twotalltotems/react-native-otp-input', () => 'OTPInputView');
 jest.mock('react-native-select-dropdown', () => 'SelectDropdown');
+
 describe('App component', () => {
   test('App component should render', () => {
     const appRender = render(<App />);

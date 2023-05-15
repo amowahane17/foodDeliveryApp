@@ -1,6 +1,8 @@
 import {Image, ImageBackground, StyleSheet} from 'react-native';
 import React, {Component} from 'react';
 import {height, width} from '../constants/ScreenDimentions';
+import {LoginContext} from '../GlobalState';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface SplashScreenProps {
   navigation?: any;
 }
@@ -9,11 +11,19 @@ export class SplashScreen extends Component<
   SplashScreenProps,
   SplashScreenState
 > {
-  componentDidMount(): void {
-    setTimeout(() => {
-      this.props.navigation.navigate('Onbording');
-    }, 2000);
-  }
+  static contextType = LoginContext;
+  componentDidMount = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('USER_DATA');
+      setTimeout(() => {
+        userData === null
+          ? this.props.navigation.navigate('Onbording')
+          : this.props.navigation.navigate('Tabs');
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   render() {
     return (
       <ImageBackground

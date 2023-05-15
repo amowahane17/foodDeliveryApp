@@ -4,17 +4,18 @@ import AuthNav from './src/navigations/AuthNav';
 import {NavigationContainer} from '@react-navigation/native';
 import PhoneSignIn from './src/PhoneAuth';
 import New from './src/New';
+import GlobalState from './src/GlobalState';
 interface AppProps {}
 interface AppState {}
 
 export class App extends Component<AppProps, AppState> {
   render() {
     return (
-      <NavigationContainer>
-        <AuthNav />
-      </NavigationContainer>
-
-      // <New />
+      <GlobalState>
+        <NavigationContainer>
+          <AuthNav />
+        </NavigationContainer>
+      </GlobalState>
     );
   }
 }

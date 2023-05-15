@@ -6,22 +6,61 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Alert,
+  Modal,
+  SafeAreaView,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-export class Otp extends Component {
-  constructor() {
-    super();
-    this.state = {code: ''};
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {colors} from '../../constants/Colors';
+interface OtpProps {
+  route?: any;
+  navigation?: any;
+}
+interface OtpState {
+  code: string;
+  otpModal: boolean;
+}
+export class Otp extends Component<OtpProps, OtpState> {
+  constructor(props: OtpProps) {
+    super(props);
+    this.state = {code: '', otpModal: true};
   }
+  componentDidMount(): void {
+    const {randomNum} = this.props.route.params;
+    console.log(randomNum);
+  }
+  signInWithEmailPassword = async (email: string, password: string) => {
+    await auth().createUserWithEmailAndPassword(email, password);
+  };
   confirmCode = async () => {
-    const {confirmParam} = this.props.route.params;
-    console.log('this is param', confirmParam);
-    try {
-      const l = await confirmParam.confirm(this.state.code);
-      console.log('succsess', l);
-    } catch (error) {
-      console.log('Invalid code.', error);
+    const {phone, email, confirmPasscode, _state, name, randomNum} =
+      this.props.route.params;
+
+    if (Number(this.state.code) === randomNum) {
+      await this.signInWithEmailPassword(email, confirmPasscode);
+      try {
+        await firestore()
+          .collection('Users')
+          .doc(phone)
+          .set({
+            name: name,
+            email: email,
+            phone: phone,
+            passcode: confirmPasscode,
+            state: _state,
+          })
+          .then(() => {
+            console.log('User added!');
+            this.props.navigation.navigate('Tabs');
+          });
+      } catch (error) {
+        console.log('error adding data', error);
+      }
+    } else {
+      Alert.alert('Otp is incorrect');
     }
   };
   render() {
@@ -30,9 +69,22 @@ export class Otp extends Component {
         source={require('../../assets/onbordBkgImgOne.png')}
         style={styles.container}>
         <View style={styles.innerContainer}>
+          <Modal transparent visible={this.state.otpModal}>
+            <View style={styles.otpModal}>
+              <Text style={styles.otpModalText}>
+                Your Otp Is: {this.props.route.params.randomNum}
+              </Text>
+              <TouchableOpacity
+                style={styles.otpModalBtn}
+                onPress={() => this.setState({otpModal: false})}>
+                <Text style={styles.otpModalBtnText}>Ok</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
           <Text style={styles.otpText}>OTP Verification</Text>
           <Image
-            style={{marginTop: '10%'}}
+            style={styles.bigEmailImg}
             source={require('../../assets/bigEmail.png')}
           />
           <Text style={styles.sent}>Enter OTP sent to</Text>
@@ -40,21 +92,17 @@ export class Otp extends Component {
           <OTPInputView
             // testID="otp"
             style={styles.passcode}
-            pinCount={6}
-            // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+            pinCount={4}
             onCodeChanged={code => {
               this.setState({code});
             }}
-            // autoFocusOnLoad
             codeInputFieldStyle={styles.codeIn}
-            // codeInputHighlightStyle={{borderColor: 'black'}}
-            // onCodeFilled={code => {
-            //   console.log(`Code is ${code}, you are good to go!`);
-            // }}
           />
           <View style={styles.resendView}>
-            <Text style={{fontSize: 20, color: 'white'}}>Resend OTP</Text>
-            <TouchableOpacity style={styles.btn}>
+            <Text style={styles.resendOtp}>Resend OTP</Text>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => this.setState({otpModal: true})}>
               <Image source={require('../../assets/reload.png')} />
             </TouchableOpacity>
           </View>
@@ -71,6 +119,34 @@ export class Otp extends Component {
   }
 }
 const styles = StyleSheet.create({
+  resendOtp: {fontSize: 20, color: 'white'},
+  bigEmailImg: {marginTop: '10%'},
+  otpModalBtnText: {fontWeight: '600', fontSize: 20, color: 'white'},
+  otpModalBtn: {
+    height: 40,
+    width: 60,
+    borderRadius: 15,
+    backgroundColor: colors.lime,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  otpModalText: {
+    color: colors.black,
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  otpModal: {
+    height: '8%',
+    width: '90%',
+    backgroundColor: 'white',
+    alignSelf: 'center',
+    marginTop: '6%',
+    borderRadius: 15,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: 20,
+  },
   logText: {fontSize: 20, color: 'white', fontWeight: '600'},
   nbtn: {
     width: '90%',

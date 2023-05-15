@@ -17,6 +17,7 @@ export const bestChoise = [
     price: '90',
     color: '#FFF3E5',
     sColor: 'orange',
+    quantity: 1,
   },
   {
     id: '2',
@@ -26,6 +27,7 @@ export const bestChoise = [
     price: '150',
     color: '#FFE5E5',
     sColor: 'pink',
+    quantity: 1,
   },
   {
     id: '3',
@@ -36,6 +38,7 @@ export const bestChoise = [
     price: '90',
     color: '#FFF3E5',
     sColor: 'orange',
+    quantity: 1,
   },
   {
     id: '4',
@@ -46,6 +49,7 @@ export const bestChoise = [
     price: '150',
     color: '#FFE5E5',
     sColor: 'pink',
+    quantity: 1,
   },
   {
     id: '5',
@@ -56,5 +60,6 @@ export const bestChoise = [
     price: '75',
     color: '#FFF3E5',
     sColor: 'orange',
+    quantity: 1,
   },
 ];

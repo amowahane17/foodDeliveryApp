@@ -9,7 +9,7 @@ export interface TodaySpecialTypes {
 
 export const todaySpecial = [
   {
-    id: '1',
+    id: '132',
     img: require('../assets/biryani.png'),
     name: 'Best Veg Dum Biryani',
     price: 100,
@@ -17,7 +17,7 @@ export const todaySpecial = [
     restaurant: 'Golden Fish Restaurant',
   },
   {
-    id: '2',
+    id: '133',
     img: require('../assets/tikka.png'),
     name: 'Chicken Tikka',
     price: 80,
@@ -25,7 +25,7 @@ export const todaySpecial = [
     restaurant: 'Barbeque Nation',
   },
   {
-    id: '3',
+    id: '134',
     img: require('../assets/todayPizza.png'),
     name: 'Pizza',
     price: 90,
@@ -33,7 +33,7 @@ export const todaySpecial = [
     restaurant: 'Naivedhyam Restaurant',
   },
   {
-    id: '4',
+    id: '135',
     img: require('../assets/dumBiryani.png'),
     name: 'Chicken Biryani',
     price: 60,
@@ -41,7 +41,7 @@ export const todaySpecial = [
     restaurant: 'Saoji Bhojnalaya',
   },
   {
-    id: '5',
+    id: '136',
     img: require('../assets/biryani.png'),
     name: 'Best Veg Dum Biryani',
     price: 100,

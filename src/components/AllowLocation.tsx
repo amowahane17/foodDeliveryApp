@@ -13,7 +13,9 @@ export class AllowLocation extends Component {
           </Text>
         </View>
         <View style={styles.bottomView}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => this.props.navigation.navigate('Tabs')}>
             <Text style={styles.logText}>ALLOW LOCATION</Text>
           </TouchableOpacity>
           <Text style={styles.dont}>Don't Allow</Text>

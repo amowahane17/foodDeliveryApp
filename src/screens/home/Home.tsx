@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
 import {ItemsDataTypes, itemsData} from '../../data/itemsData';
@@ -17,7 +18,8 @@ import {bestChoise, BestChoiseTypes} from '../../data/bestChoise';
 import {TodaySpecialTypes, todaySpecial} from '../../data/todaySpecial';
 import {RestaurantDataTypes, restaurantData} from '../../data/restaurantData';
 import {ios} from '../../constants/Platform';
-
+import {LoginContext} from '../../GlobalState';
+import {CartContext} from '../../GlobalState';
 interface HomeProps {
   navigation?: any;
 }
@@ -31,7 +33,11 @@ export class Home extends Component<HomeProps, HomeState> {
       currIndex: 0,
     };
   }
-
+  static contextType = LoginContext;
+  componentDidMount = async () => {
+    const {getUserInfo} = this.context;
+    await getUserInfo();
+  };
   itemsList = ({item}: {item: ItemsDataTypes}) => {
     return (
       <>
@@ -59,23 +65,27 @@ export class Home extends Component<HomeProps, HomeState> {
   };
   bestChoiseList = ({item}: {item: BestChoiseTypes}) => {
     return (
-      <>
-        <View style={[styles.bestChoiseCards, {backgroundColor: item.color}]}>
-          <Image style={styles.img} source={item.img} />
-          <View style={styles.innerView}>
-            <Text style={styles.bestName}>{item.name}</Text>
-            <Text style={styles.bestPrice}>₹{item.price}</Text>
-            <Image source={require('../../assets/dish.png')} />
-            <Text style={styles.bestRes}>{item.restaurent}</Text>
+      <CartContext.Consumer>
+        {context => (
+          <View style={[styles.bestChoiseCards, {backgroundColor: item.color}]}>
+            <Image style={styles.img} source={item.img} />
+            <View style={styles.innerView}>
+              <Text style={styles.bestName}>{item.name}</Text>
+              <Text style={styles.bestPrice}>₹{item.price}</Text>
+              <Image source={require('../../assets/dish.png')} />
+              <Text style={styles.bestRes}>{item.restaurent}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => context.addItemInCart(item)}
+              style={[styles.circle, {shadowColor: item.sColor}]}>
+              <Image
+                style={styles.plus}
+                source={require('../../assets/plus.png')}
+              />
+            </TouchableOpacity>
           </View>
-          <View style={[styles.circle, {shadowColor: item.sColor}]}>
-            <Image
-              style={styles.plus}
-              source={require('../../assets/plus.png')}
-            />
-          </View>
-        </View>
-      </>
+        )}
+      </CartContext.Consumer>
     );
   };
   todaySpecialList = ({item}: {item: TodaySpecialTypes}) => {
@@ -146,122 +156,137 @@ export class Home extends Component<HomeProps, HomeState> {
     );
   };
   render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.header}>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Profile')}>
-                <Image
-                  style={styles.profileImg}
-                  source={require('../../assets/profile.png')}
-                />
-              </TouchableOpacity>
-
-              <View>
-                <Text style={styles.personName}>Hi, Sachin</Text>
-                <View style={styles.hTextView}>
-                  <Image
-                    style={styles.pinImg}
-                    source={require('../../assets/pin.png')}
-                  />
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('SearchLocation')
-                    }
-                    style={styles.city}>
-                    Nagpur, Maharashtra
-                  </Text>
-                </View>
-              </View>
-              <Image
-                style={styles.bellImg}
-                source={require('../../assets/bell.png')}
-              />
-            </View>
-            <View style={styles.itemView}>
-              <FlatList
-                data={itemsData}
-                renderItem={this.itemsList}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
-            </View>
-            <View style={styles.bigCardsView}>
-              <Carousel
-                hasParallaxImages={true}
-                layout="default"
-                data={carouselData}
-                renderItem={this._renderItem}
-                sliderWidth={width}
-                itemWidth={350}
-                scrollEnabled
-                loop={true}
-                autoplay={true}
-                autoplayDelay={2000}
-                onSnapToItem={index => this.setState({currIndex: index})}
-              />
-              <Pagination
-                dotsLength={carouselData.length}
-                activeDotIndex={this.state.currIndex}
-                dotStyle={styles.dot}
-                inactiveDotStyle={styles.inactiveDot}
-                inactiveDotOpacity={1}
-                inactiveDotScale={1}
-              />
-            </View>
-            <View style={styles.bestChoise}>
-              <Text style={styles.bestText}>Best Choise</Text>
-              <FlatList
-                data={bestChoise}
-                renderItem={this.bestChoiseList}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
-            </View>
-            <View style={styles.todaysSpecial}>
-              <View style={styles.todayTexts}>
-                <Text style={styles.bestText}>Today Special</Text>
+    const {userInfo, loading} = this.context;
+    if (loading) {
+      return (
+        <View style={{flex: 1}}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      );
+    } else {
+      return (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.header}>
                 <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('TodaySpecial')}
-                  style={styles.innerTexts}>
-                  <Text style={styles.viewAll}>View All</Text>
-                  <Image source={require('../../assets/greenRightArrow.png')} />
+                  onPress={() => this.props.navigation.navigate('Profile')}>
+                  <Image
+                    style={styles.profileImg}
+                    source={require('../../assets/profile.png')}
+                  />
                 </TouchableOpacity>
-              </View>
 
-              <FlatList
-                data={todaySpecial}
-                renderItem={this.todaySpecialList}
-                keyExtractor={item => item.id}
-                scrollEnabled={false}
-              />
-            </View>
-            <View style={styles.restaurantNearby}>
-              <View style={styles.todayTexts}>
-                <Text style={styles.bestText}>Restaurant Nearby</Text>
-                <View style={styles.innerTexts}>
-                  <Text style={styles.viewAll}>Map</Text>
-                  <Image source={require('../../assets/greenRightArrow.png')} />
+                <View>
+                  <Text style={styles.personName}>Hi, {userInfo.name}</Text>
+                  <View style={styles.hTextView}>
+                    <Image
+                      style={styles.pinImg}
+                      source={require('../../assets/pin.png')}
+                    />
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('SearchLocation')
+                      }
+                      style={styles.city}>
+                      Nagpur, Maharashtra
+                    </Text>
+                  </View>
                 </View>
+                <Image
+                  style={styles.bellImg}
+                  source={require('../../assets/bell.png')}
+                />
               </View>
-              <View style={{marginTop: '5%'}}>
+              <View style={styles.itemView}>
                 <FlatList
+                  data={itemsData}
+                  renderItem={this.itemsList}
+                  // keyExtractor={item => item.id}
                   horizontal
-                  data={restaurantData}
-                  renderItem={this.restaurantList}
-                  keyExtractor={item => item.id}
                   showsHorizontalScrollIndicator={false}
                 />
               </View>
-            </View>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    );
+              <View style={styles.bigCardsView}>
+                <Carousel
+                  hasParallaxImages={true}
+                  layout="default"
+                  data={carouselData}
+                  renderItem={this._renderItem}
+                  sliderWidth={width}
+                  itemWidth={350}
+                  scrollEnabled
+                  loop={true}
+                  autoplay={true}
+                  autoplayDelay={2000}
+                  onSnapToItem={index => this.setState({currIndex: index})}
+                />
+                <Pagination
+                  dotsLength={carouselData.length}
+                  activeDotIndex={this.state.currIndex}
+                  dotStyle={styles.dot}
+                  inactiveDotStyle={styles.inactiveDot}
+                  inactiveDotOpacity={1}
+                  inactiveDotScale={1}
+                />
+              </View>
+              <View style={styles.bestChoise}>
+                <Text style={styles.bestText}>Best Choise</Text>
+                <FlatList
+                  data={bestChoise}
+                  renderItem={this.bestChoiseList}
+                  keyExtractor={item => item.id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                />
+              </View>
+              <View style={styles.todaysSpecial}>
+                <View style={styles.todayTexts}>
+                  <Text style={styles.bestText}>Today Special</Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('TodaySpecial')
+                    }
+                    style={styles.innerTexts}>
+                    <Text style={styles.viewAll}>View All</Text>
+                    <Image
+                      source={require('../../assets/greenRightArrow.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <FlatList
+                  data={todaySpecial}
+                  renderItem={this.todaySpecialList}
+                  keyExtractor={item => item.id}
+                  scrollEnabled={false}
+                />
+              </View>
+              <View style={styles.restaurantNearby}>
+                <View style={styles.todayTexts}>
+                  <Text style={styles.bestText}>Restaurant Nearby</Text>
+                  <View style={styles.innerTexts}>
+                    <Text style={styles.viewAll}>Map</Text>
+                    <Image
+                      source={require('../../assets/greenRightArrow.png')}
+                    />
+                  </View>
+                </View>
+                <View style={{marginTop: '5%'}}>
+                  <FlatList
+                    horizontal
+                    data={restaurantData}
+                    renderItem={this.restaurantList}
+                    keyExtractor={item => item.id}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </SafeAreaView>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({

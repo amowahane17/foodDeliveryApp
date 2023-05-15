@@ -6,124 +6,141 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
+import {LoginContext} from '../../GlobalState';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface ProfileProps {
   navigation?: any;
 }
 interface ProfileState {}
 export class Profile extends Component<ProfileProps, ProfileState> {
+  static contextType = LoginContext;
+  logoutHandler = async () => {
+    await AsyncStorage.removeItem('USER_DATA');
+    this.props.navigation.navigate('Onbording');
+  };
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.innerHeaderView}
-            onPress={() => this.props.navigation.goBack()}>
-            <View>
-              <Image source={require('../../assets/backArrow.png')} />
-            </View>
-            <Text style={styles.heading}>Profile</Text>
-          </TouchableOpacity>
-        </View>
-        <SafeAreaView>
-          <View style={{width}}>
-            <View style={styles.profileCard}>
-              <Image
-                style={{width: '40%'}}
-                source={require('../../assets/profileImg.png')}
-              />
-              <View style={styles.innerProfileCard}>
-                <Text style={styles.name}>Hi, Sachin</Text>
-                <View style={styles.addressView}>
-                  <Image source={require('../../assets/pin.png')} />
-                  <Text style={styles.address}>Nagpur, Maharashtra</Text>
-                </View>
+    const {userInfo, loading} = this.context;
+    if (loading) {
+      <ActivityIndicator size="large" color="#00ff00" />;
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.innerHeaderView}
+              onPress={() => this.props.navigation.goBack()}>
+              <View>
+                <Image source={require('../../assets/backArrow.png')} />
               </View>
-            </View>
-            <View style={styles.middleCard}>
-              <View style={styles.middleCardItems}>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() => this.props.navigation.navigate('Order')}>
-                  <Image source={require('../../assets/order.png')} />
-                  <Text style={styles.pageText}>Order</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.middleCardItems}>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() => this.props.navigation.navigate('EditProfile')}>
-                  <Image source={require('../../assets/editProfile.png')} />
-                  <Text style={styles.pageText}>Edit Profile</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.middleCardItems, {borderRightWidth: 0}]}>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() => this.props.navigation.navigate('Favorite')}>
-                  <Image source={require('../../assets/fav.png')} />
-                  <Text style={styles.pageText}>Favorite</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.optionsView}>
-              <View style={styles.option}>
-                <View style={styles.img}>
-                  <Image
-                    style={{tintColor: '#EF8382'}}
-                    source={require('../../assets/tabhome.png')}
-                  />
-                </View>
-                <Text style={styles.text}>Home</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.option}>
-                <View style={styles.img}>
-                  <Image
-                    style={{tintColor: '#EF8382'}}
-                    source={require('../../assets/taboffer.png')}
-                  />
-                </View>
-                <Text style={styles.text}>Offers</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.option}>
-                <View style={styles.img}>
-                  <Image
-                    style={{tintColor: '#EF8382'}}
-                    source={require('../../assets/privi.png')}
-                  />
-                </View>
-                <Text style={styles.text}>Privicy Policy</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.option}>
-                <View style={styles.img}>
-                  <Image
-                    style={{tintColor: '#EF8382'}}
-                    source={require('../../assets/terms.png')}
-                  />
-                </View>
-                <Text style={styles.text}>Terms And Conditions</Text>
-              </View>
-              <View style={styles.line} />
-              <TouchableOpacity style={styles.option}>
-                <View style={styles.img}>
-                  <Image
-                    style={{tintColor: '#EF8382'}}
-                    source={require('../../assets/logout.png')}
-                  />
-                </View>
-                <Text style={styles.text}>Logout</Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={styles.heading}>Profile</Text>
+            </TouchableOpacity>
           </View>
-        </SafeAreaView>
-      </View>
-    );
+          <SafeAreaView>
+            <View style={{width}}>
+              <View style={styles.profileCard}>
+                <Image
+                  style={{width: '40%'}}
+                  source={require('../../assets/profileImg.png')}
+                />
+                <View style={styles.innerProfileCard}>
+                  <Text style={styles.name}>Hi, {userInfo.name}</Text>
+                  <View style={styles.addressView}>
+                    <Image source={require('../../assets/pin.png')} />
+                    <Text style={styles.address}>Nagpur, Maharashtra</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.middleCard}>
+                <View style={styles.middleCardItems}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => this.props.navigation.navigate('Order')}>
+                    <Image source={require('../../assets/order.png')} />
+                    <Text style={styles.pageText}>Order</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.middleCardItems}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() =>
+                      this.props.navigation.navigate('EditProfile')
+                    }>
+                    <Image source={require('../../assets/editProfile.png')} />
+                    <Text style={styles.pageText}>Edit Profile</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={[styles.middleCardItems, {borderRightWidth: 0}]}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => this.props.navigation.navigate('Favorite')}>
+                    <Image source={require('../../assets/fav.png')} />
+                    <Text style={styles.pageText}>Favorite</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.optionsView}>
+                <View style={styles.option}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{tintColor: '#EF8382'}}
+                      source={require('../../assets/tabhome.png')}
+                    />
+                  </View>
+                  <Text style={styles.text}>Home</Text>
+                </View>
+                <View style={styles.line} />
+                <View style={styles.option}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{tintColor: '#EF8382'}}
+                      source={require('../../assets/taboffer.png')}
+                    />
+                  </View>
+                  <Text style={styles.text}>Offers</Text>
+                </View>
+                <View style={styles.line} />
+                <View style={styles.option}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{tintColor: '#EF8382'}}
+                      source={require('../../assets/privi.png')}
+                    />
+                  </View>
+                  <Text style={styles.text}>Privicy Policy</Text>
+                </View>
+                <View style={styles.line} />
+                <View style={styles.option}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{tintColor: '#EF8382'}}
+                      source={require('../../assets/terms.png')}
+                    />
+                  </View>
+                  <Text style={styles.text}>Terms And Conditions</Text>
+                </View>
+                <View style={styles.line} />
+                <TouchableOpacity
+                  onPress={() => this.logoutHandler()}
+                  style={styles.option}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{tintColor: '#EF8382'}}
+                      source={require('../../assets/logout.png')}
+                    />
+                  </View>
+                  <Text style={styles.text}>Logout</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </SafeAreaView>
+        </View>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({

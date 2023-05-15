@@ -16,7 +16,7 @@ describe('Login Component', () => {
     const loginBtn = loginRender.getByTestId('loginBtn');
     const aleartSpy = jest.spyOn(Alert, 'alert');
     fireEvent.press(loginBtn);
-    expect(aleartSpy).toHaveBeenCalledWith('Please Enter Valid Information');
+    expect(aleartSpy).('Please Enter Valid Information');
   });
   test('Login Button on valid validations', () => {
     const navigation = {navigate: jest.fn()};

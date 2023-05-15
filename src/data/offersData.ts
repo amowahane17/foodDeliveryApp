@@ -7,19 +7,19 @@ export interface OfferDataTypes {
 
 export const offersData = [
   {
-    id: '1',
+    id: '107',
     off: 'Get 30% OFF',
     text: 'Super Veg Delicious Dish',
     img: require('../assets/offerOne.png'),
   },
   {
-    id: '2',
+    id: '108',
     off: 'Get 30% OFF',
     text: 'Best Veg Hamburger',
     img: require('../assets/offerTwo.png'),
   },
   {
-    id: '3',
+    id: '109',
     off: 'Get 30% OFF',
     text: 'Classic Chicken Wings',
     img: require('../assets/offerThree.png'),

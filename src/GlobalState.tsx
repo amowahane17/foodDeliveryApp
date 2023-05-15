@@ -1,12 +1,106 @@
-// import React, {Component} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {Component, createContext} from 'react';
+interface GlobalStateProps {
+  children: any;
+}
+interface GlobalStateState {
+  userData: null | {
+    email: string;
+    name: string;
+    passcode: string;
+    phone: string;
+    state: string;
+  };
+  cartData: any[];
+  isLoading: boolean;
+}
+export const LoginContext = createContext({});
+export const CartContext = createContext({});
+export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
+  constructor(props: GlobalStateProps) {
+    super(props);
+    this.state = {userData: null, isLoading: true, cartData: []};
+  }
 
-// const LoginContext =
-// export class GlobalState extends Component {
-//   render() {
-//     return (
+  getUserData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('USER_DATA');
+      if (userData !== null) {
+        this.setState({userData: JSON.parse(userData), isLoading: false});
+      }
+    } catch (error) {
+      console.log('unable to get user data', error);
+    }
+  };
+  addToCart = item => {
+    const {cartData} = this.state;
+    const duplicates = cartData?.find(ele => item === ele);
 
-//     );
-//   }
-// }
+    if (duplicates === undefined) {
+      this.setState({cartData: [...cartData, item]});
+    }
+  };
+  incrementQuantity = item => {
+    this.setState({
+      cartData: this.state.cartData.map(ele => {
+        if (ele.id === item.id) {
+          return {
+            ...ele,
+            quantity: item.quantity + 1,
+          };
+        }
+        return ele;
+      }),
+    });
+  };
+  decrementQuantity = item => {
+    this.setState({
+      cartData: this.state.cartData.map(ele => {
+        if (ele.id === item.id && item.quantity > 1) {
+          return {
+            ...ele,
+            quantity: item.quantity - 1,
+          };
+        } else if (item.quantity < 2) {
+          this.deleteCartItem(item.id);
+        }
+        return ele;
+      }),
+    });
+  };
+  deleteCartItem = id => {
+    this.setState({
+      cartData: this.state.cartData.filter(
+        ele => {
+          return ele.id !== id;
+        },
+        () => {
+          console.log({state: this.state.cartData});
+        },
+      ),
+    });
+  };
+  render() {
+    return (
+      <LoginContext.Provider
+        value={{
+          getUserInfo: this.getUserData,
+          userInfo: this.state.userData,
+          loading: this.state.isLoading,
+        }}>
+        <CartContext.Provider
+          value={{
+            cart: this.state.cartData,
+            addItemInCart: this.addToCart,
+            increment: this.incrementQuantity,
+            decrement: this.decrementQuantity,
+            deleteItem: this.deleteCartItem,
+          }}>
+          {this.props.children}
+        </CartContext.Provider>
+      </LoginContext.Provider>
+    );
+  }
+}
 
-// export default GlobalState;
+export default GlobalState;

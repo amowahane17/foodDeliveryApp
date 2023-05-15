@@ -29,6 +29,13 @@
             {
               "client_id": "69454174886-i2qc6vd75l725klvb2ho7sl3qrdrmula.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "69454174886-2unpkaghs418cabd9nhb3g47u9675g84.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.foodDeliveryApp"
+              }
             }
           ]
         }

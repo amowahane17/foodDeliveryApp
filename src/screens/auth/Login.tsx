@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import React, {Component} from 'react';
 import {height, width} from '../../constants/ScreenDimentions';
-import PhoneInput from 'react-native-phone-number-input';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
 import {codeData} from '../../data/codeData';
-
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface LoginProps {
   navigation?: any;
 }
@@ -28,6 +28,7 @@ interface LoginState {
   code: string;
   codeModalToggle: boolean;
   selectedIndex: null | number;
+  filterData: any[];
 }
 export class Login extends Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
@@ -38,19 +39,49 @@ export class Login extends Component<LoginProps, LoginState> {
       code: '',
       codeModalToggle: false,
       selectedIndex: null,
+      filterData: [],
     };
   }
-  loginHandler = () => {
+  loginHandler = async () => {
     const {phone, code} = this.state;
     const phoneReg = /^[6-9]\d{9}$/;
     const passReg = /^\d{6}$/;
     const isValidPhone = phoneReg.test(phone);
     const isValidPass = passReg.test(code);
+
     if (isValidPass && isValidPhone) {
-      this.props.navigation.navigate('Location');
+      try {
+        const user = await firestore().collection('Users').doc(phone).get();
+        const data = user.data();
+        console.log(data, 'this is data');
+        if (data !== undefined) {
+          if (data.passcode === code) {
+            try {
+              const userData = JSON.stringify(data);
+              await AsyncStorage.setItem('USER_DATA', userData);
+              this.props.navigation.navigate('Location');
+            } catch (error) {
+              console.log('async storage login error', error);
+            }
+            this.props.navigation.navigate('Location');
+          } else {
+            Alert.alert('Incorrect Passode');
+          }
+        } else {
+          Alert.alert('Please Register!');
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
     } else {
       Alert.alert('Please Enter Valid Information');
     }
+  };
+  countrySearch = (event: string) => {
+    const countryFilteredData = codeData.filter(element =>
+      element.name.toLocaleLowerCase().includes(event.toLocaleLowerCase()),
+    );
+    this.setState({filterData: countryFilteredData});
   };
   render() {
     return (
@@ -69,23 +100,12 @@ export class Login extends Component<LoginProps, LoginState> {
               </View>
             </View>
             <View style={styles.loginView}>
-              {/* <PhoneInput
-                //@ts-ignore
-                testID="phoneInputLogin"
-                containerStyle={styles.containerStyle}
-                value={this.state.value}
-                defaultCode="IN"
-                onChangeText={event => this.setState({value: event})}
-                placeholder="Mobile no"
-                codeTextStyle={{fontSize: 24}}
-                textInputStyle={{fontSize: 20}}
-              /> */}
               <View style={styles.phoneInputContainer}>
                 <TouchableOpacity
                   onPress={() => this.setState({codeModalToggle: true})}
                   style={styles.countryCodeView}>
                   <Image
-                    style={{width: 30, height: 30}}
+                    style={styles.flagImg}
                     source={
                       this.state.selectedIndex === null
                         ? codeData[0].img
@@ -98,7 +118,7 @@ export class Login extends Component<LoginProps, LoginState> {
                       : codeData[this.state.selectedIndex].code}
                   </Text>
                   <Image
-                    style={{marginLeft: '5%'}}
+                    style={styles.openArrow}
                     source={require('../../assets/modalOpenArrow.png')}
                   />
                 </TouchableOpacity>
@@ -111,11 +131,7 @@ export class Login extends Component<LoginProps, LoginState> {
                     onChangeText={event => this.setState({phone: event})}
                   />
                   <Image
-                    style={{
-                      position: 'absolute',
-                      right: 20,
-                      tintColor: 'grey',
-                    }}
+                    style={styles.phoneLogo}
                     source={require('../../assets/phone.png')}
                   />
                 </View>
@@ -198,12 +214,17 @@ export class Login extends Component<LoginProps, LoginState> {
                     <Image source={require('../../assets/cross.png')} />
                   </TouchableOpacity>
                   <TextInput
-                    style={{width: '70%', marginLeft: '5%'}}
+                    style={styles.enterCountryName}
                     placeholder="Enter Country Name"
+                    onChangeText={event => this.countrySearch(event)}
                   />
                 </View>
                 <FlatList
-                  data={codeData}
+                  data={
+                    this.state.filterData.length > 0
+                      ? this.state.filterData
+                      : codeData
+                  }
                   renderItem={({item, index}) => {
                     return (
                       <>
@@ -215,10 +236,7 @@ export class Login extends Component<LoginProps, LoginState> {
                               codeModalToggle: false,
                             })
                           }>
-                          <Image
-                            style={{height: 30, width: 30}}
-                            source={item.img}
-                          />
+                          <Image style={styles.img} source={item.img} />
                           <Text style={styles.countryName}>{item.name}</Text>
                           <Text style={styles.countryCodeModal}>
                             ({item.code})
@@ -239,6 +257,15 @@ export class Login extends Component<LoginProps, LoginState> {
   }
 }
 const styles = StyleSheet.create({
+  img: {height: 30, width: 30},
+  enterCountryName: {width: '70%', marginLeft: '5%'},
+  phoneLogo: {
+    position: 'absolute',
+    right: 20,
+    tintColor: 'grey',
+  },
+  openArrow: {marginLeft: '5%'},
+  flagImg: {width: 30, height: 30},
   cusSellText: {
     fontWeight: '600',
     color: colors.black,
@@ -337,6 +364,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '5%',
+    elevation: 10,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowColor: 'red',
   },
   xView: {
     flexDirection: 'row',

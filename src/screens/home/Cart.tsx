@@ -6,13 +6,58 @@ import {
   Text,
   View,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {width, height} from '../../constants/ScreenDimentions';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
+import {CartContext} from '../../GlobalState';
 
 export class Cart extends Component {
+  static contextType = CartContext;
+  cartItemsList = ({item}) => {
+    const {increment, decrement, deleteItem} = this.context;
+    return (
+      <View style={styles.cartCard}>
+        <Image style={styles.img} source={item.img} />
+        <View style={styles.innerCardView}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <Text style={styles.price}>
+            ₹{item.price}{' '}
+            {item.off_price && (
+              <Text style={styles.offPrice}>₹{item.off_price}</Text>
+            )}
+          </Text>
+          <View style={styles.btns}>
+            <View style={styles.quantityView}>
+              <TouchableOpacity
+                style={styles.minus}
+                onPress={() => decrement(item)}>
+                <Image source={require('../../assets/minus.png')} />
+              </TouchableOpacity>
+              <View style={styles.middleQuantity}>
+                <Text style={styles.qNum}>{item.quantity}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.plus}
+                onPress={() => increment(item)}>
+                <Image source={require('../../assets/plu.png')} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.del}
+              onPress={() => deleteItem(item.id)}>
+              <Image source={require('../../assets/del.png')} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  };
   render() {
+    const {cart} = this.context;
+    console.log(cart, 'this is cart');
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -20,34 +65,11 @@ export class Cart extends Component {
         </View>
         <SafeAreaView style={{width, height}}>
           <View style={{width, height: ios ? '70%' : '72%'}}>
-            <View style={styles.cartCard}>
-              <Image
-                style={styles.img}
-                source={require('../../assets/pizzaWithShadow.png')}
-              />
-              <View style={styles.innerCardView}>
-                <Text style={styles.itemName}>Pizza</Text>
-                <Text style={styles.price}>
-                  ₹100 <Text style={styles.offPrice}>₹200</Text>
-                </Text>
-                <View style={styles.btns}>
-                  <View style={styles.quantityView}>
-                    <TouchableOpacity style={styles.minus}>
-                      <Image source={require('../../assets/minus.png')} />
-                    </TouchableOpacity>
-                    <View style={styles.middleQuantity}>
-                      <Text style={styles.qNum}>1</Text>
-                    </View>
-                    <TouchableOpacity style={styles.plus}>
-                      <Image source={require('../../assets/plu.png')} />
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableOpacity style={styles.del}>
-                    <Image source={require('../../assets/del.png')} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+            <FlatList
+              data={cart}
+              renderItem={this.cartItemsList}
+              keyExtractor={item => item.id}
+            />
           </View>
           <View>
             <TouchableOpacity style={styles.checkout}>

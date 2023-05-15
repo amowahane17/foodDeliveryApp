@@ -13,12 +13,10 @@ import {
   Modal,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
-import PhoneInput from 'react-native-phone-number-input';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import SelectDropdown from 'react-native-select-dropdown';
 import {colors} from '../../constants/Colors';
 import {codeData} from '../../data/codeData';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 interface RegisterProps {
   navigation?: any;
 }
@@ -32,7 +30,6 @@ interface RegisterState {
   name: string;
   selectedIndex: null | number;
   codeModalToggle: boolean;
-  confirm: null | FirebaseAuthTypes.ConfirmationResult;
 }
 const states = ['Maharashtra', 'Telangana', 'Gujrat', 'Rajasthan'];
 export class Register extends Component<RegisterProps, RegisterState> {
@@ -48,33 +45,8 @@ export class Register extends Component<RegisterProps, RegisterState> {
       name: '',
       selectedIndex: null,
       codeModalToggle: false,
-      confirm: null,
     };
   }
-  onAuthStateChanged = user => {
-    if (user) {
-      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
-      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
-      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
-      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
-    }
-  };
-  componentDidMount = () => {
-    const subscriber = auth().onAuthStateChanged(this.onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  };
-  signInWithPhoneNumber = async (phoneNumber: string) => {
-    console.log('this is signinphone', phoneNumber);
-
-    const confirmation = await auth().createUserWithEmailAndPassword(
-      'shuhamsarode435@gmail.com',
-      '123456',
-    );
-    this.setState({confirm: confirmation}, () => {
-      console.log('this is confirmaiton', this.state.confirm);
-    });
-  };
-
   submitHandler = async () => {
     const {phone, email, tickToggle, passcode, confirmPasscode, _state, name} =
       this.state;
@@ -88,7 +60,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
     const isMatching = passcode === confirmPasscode;
     const isNameValid = name.length > 2 && name !== '';
     const isStateValid = _state !== '';
-
+    let randomNum = Math.floor(1000 + Math.random() * 9000);
     if (tickToggle) {
       if (
         isEmailValid &&
@@ -99,25 +71,13 @@ export class Register extends Component<RegisterProps, RegisterState> {
         isNameValid &&
         isStateValid
       ) {
-        if (!this.state.confirm) {
-          const l = `${
-            this.state.selectedIndex === null
-              ? codeData[0].code
-              : codeData[this.state.selectedIndex].code
-          } ${phone}`;
-          await this.signInWithPhoneNumber(l);
-
-          console.log(
-            `${
-              this.state.selectedIndex === null
-                ? codeData[0].code
-                : codeData[this.state.selectedIndex].code
-            } ${phone}`,
-          );
-          console.log('this is l', l);
-        }
         this.props.navigation.navigate('Otp', {
-          confirmParam: this.state.confirm,
+          name,
+          phone: phone,
+          email: email,
+          confirmPasscode: confirmPasscode,
+          _state: _state,
+          randomNum: randomNum,
         });
       } else {
         Alert.alert('Please enter valid details');
@@ -140,7 +100,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
               <View style={styles.innerTopView}>
                 <TouchableOpacity
                   testID="goBackBtn"
-                  style={{marginLeft: '10%'}}
+                  style={styles.backBtn}
                   onPress={() => this.props.navigation.goBack()}>
                   <Image source={require('../../assets/leftArrow.png')} />
                 </TouchableOpacity>
@@ -161,25 +121,12 @@ export class Register extends Component<RegisterProps, RegisterState> {
                   source={require('../../assets/person.png')}
                 />
               </View>
-              {/* <PhoneInput
-                //@ts-ignore
-                testID="phoneInputReg"
-                containerStyle={styles.containerStyle}
-                // value={this.state.value}
-                defaultCode="IN"
-                onChangeText={event => this.setState({phone: event})}
-                // autoFocus
-                placeholder="Mobile no"
-                // codeTextStyle={{fontSize: 24}}
-                textInputStyle={{height: 50}}
-                codeTextStyle={{height: 20}}
-              /> */}
               <View style={styles.phoneInputContainer}>
                 <TouchableOpacity
                   onPress={() => this.setState({codeModalToggle: true})}
                   style={styles.countryCodeView}>
                   <Image
-                    style={{width: 30, height: 30}}
+                    style={styles.flagImg}
                     source={
                       this.state.selectedIndex === null
                         ? codeData[0].img
@@ -192,7 +139,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                       : codeData[this.state.selectedIndex].code}
                   </Text>
                   <Image
-                    style={{marginLeft: '5%'}}
+                    style={styles.modalArrow}
                     source={require('../../assets/modalOpenArrow.png')}
                   />
                 </TouchableOpacity>
@@ -205,11 +152,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                     onChangeText={event => this.setState({phone: event})}
                   />
                   <Image
-                    style={{
-                      position: 'absolute',
-                      right: 25,
-                      tintColor: 'grey',
-                    }}
+                    style={styles.phoneImg}
                     source={require('../../assets/phone.png')}
                   />
                 </View>
@@ -224,7 +167,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                   onChangeText={event => this.setState({email: event})}
                 />
                 <Image
-                  style={[styles.icon, {right: 22}]}
+                  style={[styles.icon, styles.right]}
                   source={require('../../assets/email.png')}
                 />
               </View>
@@ -234,16 +177,10 @@ export class Register extends Component<RegisterProps, RegisterState> {
                 testID="passcodeReg"
                 style={styles.passcode}
                 pinCount={6}
-                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
                 onCodeChanged={code => {
                   this.setState({passcode: code});
                 }}
-                // autoFocusOnLoad
                 codeInputFieldStyle={styles.codeIn}
-                // codeInputHighlightStyle={{borderColor: 'black'}}
-                // onCodeFilled={code => {
-                //   console.log(`Code is ${code}, you are good to go!`);
-                // }}
                 secureTextEntry
                 placeholderCharacter="*"
               />
@@ -253,16 +190,10 @@ export class Register extends Component<RegisterProps, RegisterState> {
                 testID="confPasscodeReg"
                 style={styles.passcode}
                 pinCount={6}
-                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
                 onCodeChanged={code => {
                   this.setState({confirmPasscode: code});
                 }}
-                // autoFocusOnLoad
                 codeInputFieldStyle={styles.codeIn}
-                // codeInputHighlightStyle={{borderColor: 'black'}}
-                // onCodeFilled={code => {
-                //   console.log(`Code is ${code}, you are good to go!`);
-                // }}
                 secureTextEntry
                 placeholderCharacter="*"
               />
@@ -274,23 +205,19 @@ export class Register extends Component<RegisterProps, RegisterState> {
                   this.setState({_state: selectedItem});
                 }}
                 buttonTextAfterSelection={(selectedItem, _index) => {
-                  // text represented after item is selected
-                  // if data array is an array of objects then return selectedItem.property to render after item is selected
                   return selectedItem;
                 }}
                 rowTextForSelection={(item, _index) => {
-                  // text represented for each item in dropdown
-                  // if data array is an array of objects then return item.property to represent item in dropdown
                   return item;
                 }}
                 defaultButtonText="State"
                 // buttonTextStyle={{marginRight: '70%'}}
-                dropdownStyle={{width: '90%'}}
+                dropdownStyle={styles.dropStyle}
                 buttonStyle={styles.buttonStyle}
                 dropdownIconPosition="right"
                 renderDropdownIcon={() => (
                   <Image
-                    style={{tintColor: 'grey'}}
+                    style={styles.downArrow}
                     source={require('../../assets/downArrow.png')}
                   />
                 )}
@@ -329,7 +256,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                     <Image source={require('../../assets/cross.png')} />
                   </TouchableOpacity>
                   <TextInput
-                    style={{width: '70%', marginLeft: '5%'}}
+                    style={styles.enterCountryName}
                     placeholder="Enter Country Name"
                   />
                 </View>
@@ -346,10 +273,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
                               codeModalToggle: false,
                             })
                           }>
-                          <Image
-                            style={{height: 30, width: 30}}
-                            source={item.img}
-                          />
+                          <Image style={styles.img} source={item.img} />
                           <Text style={styles.countryName}>{item.name}</Text>
                           <Text style={styles.countryCodeModal}>
                             ({item.code})
@@ -370,6 +294,19 @@ export class Register extends Component<RegisterProps, RegisterState> {
   }
 }
 const styles = StyleSheet.create({
+  modalArrow: {marginLeft: '5%'},
+  right: {right: 22},
+  img: {height: 30, width: 30},
+  flagImg: {width: 30, height: 30},
+  backBtn: {marginLeft: '10%'},
+  downArrow: {tintColor: 'grey'},
+  dropStyle: {width: '90%'},
+  enterCountryName: {width: '70%', marginLeft: '5%'},
+  phoneImg: {
+    position: 'absolute',
+    right: 25,
+    tintColor: 'grey',
+  },
   modalSearchBar: {
     width: '90%',
     height: 40,
@@ -459,11 +396,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '4%',
-    // shadowColor: '#94CD00',
-    // shadowOpacity: 0.1,
-    // elevation: 6,
-    // shadowRadius: 15,
-    // shadowOffset: {width: 1, height: 13},
+    elevation: 10,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowColor: 'green',
   },
   termsContainer: {
     flexDirection: 'row',

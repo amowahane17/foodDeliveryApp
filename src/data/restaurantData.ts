@@ -8,7 +8,7 @@ export interface RestaurantDataTypes {
 
 export const restaurantData = [
   {
-    id: '1',
+    id: '110',
     img: require('../assets/img.jpeg'),
     name: 'Golden Fish Restaurant',
     distance: 2.5,
@@ -21,19 +21,19 @@ export const restaurantData = [
     ],
     team_data: [
       {
-        id: '1',
+        id: '111',
         name: 'Prasad Singh',
         img: require('../assets/prasadSingh.png'),
         deg: 'Manager',
       },
       {
-        id: '2',
+        id: '112',
         name: 'Mohan Lal',
         img: require('../assets/mohanLal.png'),
         deg: 'Cheif',
       },
       {
-        id: '3',
+        id: '113',
         name: 'Mohan Lal',
         img: require('../assets/mohanLal.png'),
         deg: 'Cheif',
@@ -51,19 +51,19 @@ export const restaurantData = [
     ],
     catgoryData: [
       {
-        id: '1',
+        id: '114',
         name: 'Pizza',
         img: require('../assets/pizza.png'),
         color: '#FE5656',
       },
       {
-        id: '2',
+        id: '115',
         name: 'Burger',
         img: require('../assets/burger.png'),
         color: '#FFC268',
       },
       {
-        id: '3',
+        id: '116',
         name: 'Chicken',
         img: require('../assets/chickenBuk.png'),
         color: '#FE5656',
@@ -71,7 +71,7 @@ export const restaurantData = [
     ],
     bestChoise: [
       {
-        id: '1',
+        id: '117',
         img: require('../assets/burgerWithShadow.png'),
         name: 'Burger',
         restaurent: 'Barbeque Nation',
@@ -80,7 +80,7 @@ export const restaurantData = [
         sColor: 'orange',
       },
       {
-        id: '2',
+        id: '118',
         img: require('../assets/pizzaWithShadow.png'),
         name: 'Pizza',
         restaurent: 'Naivedhyam Restaurant',
@@ -89,7 +89,7 @@ export const restaurantData = [
         sColor: 'pink',
       },
       {
-        id: '3',
+        id: '119',
         img: require('../assets/burgerWithShadow.png'),
         name: 'Biryani',
 
@@ -101,31 +101,31 @@ export const restaurantData = [
     ],
     todaySpecial: [
       {
-        id: '1',
+        id: '120',
         img: require('../assets/biryani.png'),
         name: 'Best Veg Dum Biryani',
         price: 100,
       },
       {
-        id: '2',
+        id: '121',
         img: require('../assets/tikka.png'),
         name: 'Chicken Tikka',
         price: 80,
       },
       {
-        id: '3',
+        id: '122',
         img: require('../assets/todayPizza.png'),
         name: 'Pizza',
         price: 90,
       },
       {
-        id: '4',
+        id: '123',
         img: require('../assets/dumBiryani.png'),
         name: 'Chicken Biryani',
         price: 60,
       },
       {
-        id: '5',
+        id: '124',
         img: require('../assets/biryani.png'),
         name: 'Best Veg Dum Biryani',
         price: 100,
@@ -133,21 +133,21 @@ export const restaurantData = [
     ],
   },
   {
-    id: '2',
+    id: '125',
     img: require('../assets/img.jpeg'),
     name: 'Chinese Fork restaurant',
     distance: 2.4,
     address: 'Manish Nagar, Ingole Nagar, Sonegaon, Nagpur',
   },
   {
-    id: '3',
+    id: '126',
     img: require('../assets/img.jpeg'),
     name: 'Kshatriya Restaurant',
     distance: 1.2,
     address: 'Manish Nagar, Ingole Nagar, Sonegaon, Nagpur',
   },
   {
-    id: '4',
+    id: '127',
     img: require('../assets/img.jpeg'),
     name: 'Nandini Restaurant',
     distance: 2.4,
