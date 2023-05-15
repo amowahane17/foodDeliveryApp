@@ -63,15 +63,15 @@ export class Cart extends Component {
         <View style={styles.header}>
           <Text style={styles.heading}>Cart</Text>
         </View>
-        <SafeAreaView style={{width, height}}>
-          <View style={{width, height: ios ? '70%' : '72%'}}>
+        <SafeAreaView>
+          <View style={{width, height: ios ? '70%' : '83%'}}>
             <FlatList
               data={cart}
               renderItem={this.cartItemsList}
               keyExtractor={item => item.id}
             />
           </View>
-          <View>
+          <View style={{width, height: 60, paddingTop: '2%'}}>
             <TouchableOpacity style={styles.checkout}>
               <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRightWidth: 1,
     borderLeftWidth: 1,
-    borderColor: 'gray',
+    borderColor: colors.borderColor,
   },
   plus: {
     height: '100%',
@@ -145,12 +145,13 @@ const styles = StyleSheet.create({
   price: {color: 'red', fontWeight: '600', fontSize: 15},
   itemName: {fontSize: 18, color: '#161A1D', fontWeight: '600'},
   innerCardView: {
-    width: '55%',
+    width: '60%',
     padding: 10,
     justifyContent: 'space-evenly',
+    marginLeft: '2%',
   },
   img: {
-    width: '40%',
+    width: '35%',
     height: '100%',
     resizeMode: 'contain',
     marginLeft: '5%',
@@ -165,11 +166,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowColor: 'orange',
     backgroundColor: 'white',
-    marginTop: 20,
+    marginTop: '5%',
     borderRadius: 15,
     flexDirection: 'row',
+    marginBottom: '2%',
   },
-  container: {height, width, backgroundColor: 'white'},
+  container: {height: '100%', width, backgroundColor: 'white'},
   heading: {
     alignSelf: 'flex-end',
     fontSize: 22,

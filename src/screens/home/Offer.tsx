@@ -7,7 +7,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import {height, width} from '../../constants/ScreenDimentions';
+import {
+  height,
+  width,
+  fontScales,
+  fontScale,
+} from '../../constants/ScreenDimentions';
 import {ios} from '../../constants/Platform';
 import {FlatList} from 'react-native-gesture-handler';
 import {OfferDataTypes, offersData} from '../../data/offersData';
@@ -21,7 +26,7 @@ export class Offer extends Component {
           <Text style={styles.offText}>{item.off}</Text>
           <Text style={styles.offerText}>{item.text}</Text>
         </View>
-        <Image source={item.img} />
+        <Image style={{alignSelf: 'center'}} source={item.img} />
       </View>
     );
   };
@@ -49,7 +54,9 @@ export class Offer extends Component {
           <Text style={styles.heading}>Best Offers</Text>
         </View>
         <SafeAreaView>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: '10%'}}
+            showsVerticalScrollIndicator={false}>
             <View style={{}}>
               <FlatList
                 scrollEnabled={false}
@@ -76,8 +83,8 @@ export class Offer extends Component {
 const styles = StyleSheet.create({
   nearbyOffers: {
     marginTop: '6%',
-    height: 830,
-    marginBottom: ios ? 40 : 0,
+    height,
+    marginBottom: ios ? 40 : 30,
   },
   offerText: {
     width: '70%',
@@ -87,13 +94,22 @@ const styles = StyleSheet.create({
     marginTop: '4%',
   },
   offText: {color: 'white', fontSize: 16, fontWeight: '500'},
-  innerOfferView: {position: 'absolute', zIndex: 1, padding: 25},
-  offerCard: {height: 135, width: '90%', alignSelf: 'center', marginTop: 20},
+  innerOfferView: {
+    position: 'absolute',
+    zIndex: 1,
+    padding: 25,
+  },
+  offerCard: {
+    height: 135,
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
   tRes: {
     marginLeft: '3%',
     color: '#A2A3A5',
     fontWeight: '600',
-    fontSize: 18,
+    fontSize: fontScale + 16,
   },
   tSecondView: {flexDirection: 'row', alignItems: 'center'},
   tOffPrice: {

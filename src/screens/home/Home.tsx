@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {height, width} from '../../constants/ScreenDimentions';
+import {fontScale, height, width} from '../../constants/ScreenDimentions';
 import {ItemsDataTypes, itemsData} from '../../data/itemsData';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {CarouselDataTypes, carouselData} from '../../data/carouselData';
@@ -18,8 +18,7 @@ import {bestChoise, BestChoiseTypes} from '../../data/bestChoise';
 import {TodaySpecialTypes, todaySpecial} from '../../data/todaySpecial';
 import {RestaurantDataTypes, restaurantData} from '../../data/restaurantData';
 import {ios} from '../../constants/Platform';
-import {LoginContext} from '../../GlobalState';
-import {CartContext} from '../../GlobalState';
+import {LoginContext, CartContext} from '../../GlobalState';
 interface HomeProps {
   navigation?: any;
 }
@@ -159,7 +158,7 @@ export class Home extends Component<HomeProps, HomeState> {
     const {userInfo, loading} = this.context;
     if (loading) {
       return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size="large" color="#00ff00" />
         </View>
       );
@@ -167,7 +166,9 @@ export class Home extends Component<HomeProps, HomeState> {
       return (
         <SafeAreaView style={styles.container}>
           <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              contentContainerStyle={{paddingBottom: '10%'}}
+              showsVerticalScrollIndicator={false}>
               <View style={styles.header}>
                 <TouchableOpacity
                   onPress={() => this.props.navigation.navigate('Profile')}>
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     color: '#A2A3A5',
     fontWeight: '600',
-    fontSize: 18,
+    fontSize: fontScale + 16,
   },
   tSecondView: {flexDirection: 'row', alignItems: 'center'},
   tOffPrice: {

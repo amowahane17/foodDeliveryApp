@@ -62,7 +62,9 @@ export class SingleItems extends Component {
         style={[styles.container, {backgroundColor: catItem?.color}]}>
         {/* <StatusBar backgroundColor={catItem.color} /> */}
         <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: '10%'}}
+            showsVerticalScrollIndicator={false}>
             <View style={[styles.header, {backgroundColor: catItem.color}]}>
               <View style={styles.firstView}>
                 <TouchableOpacity

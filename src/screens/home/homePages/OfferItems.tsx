@@ -43,7 +43,9 @@ export class OfferItems extends Component {
     return (
       <SafeAreaView>
         <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: '10%'}}
+            showsVerticalScrollIndicator={false}>
             <View style={styles.header}>
               <View style={styles.headerInnerView}>
                 <TouchableOpacity

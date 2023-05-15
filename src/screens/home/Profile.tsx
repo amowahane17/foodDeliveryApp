@@ -26,7 +26,11 @@ export class Profile extends Component<ProfileProps, ProfileState> {
   render() {
     const {userInfo, loading} = this.context;
     if (loading) {
-      <ActivityIndicator size="large" color="#00ff00" />;
+      return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      );
     } else {
       return (
         <View style={styles.container}>
@@ -41,101 +45,97 @@ export class Profile extends Component<ProfileProps, ProfileState> {
             </TouchableOpacity>
           </View>
           <SafeAreaView>
-            <View style={{width}}>
-              <View style={styles.profileCard}>
-                <Image
-                  style={{width: '40%'}}
-                  source={require('../../assets/profileImg.png')}
-                />
-                <View style={styles.innerProfileCard}>
-                  <Text style={styles.name}>Hi, {userInfo.name}</Text>
-                  <View style={styles.addressView}>
-                    <Image source={require('../../assets/pin.png')} />
-                    <Text style={styles.address}>Nagpur, Maharashtra</Text>
-                  </View>
+            <View style={styles.profileCard}>
+              <Image
+                style={{width: '40%'}}
+                source={require('../../assets/profileImg.png')}
+              />
+              <View style={styles.innerProfileCard}>
+                <Text style={styles.name}>Hi, {userInfo.name}</Text>
+                <View style={styles.addressView}>
+                  <Image source={require('../../assets/pin.png')} />
+                  <Text style={styles.address}>Nagpur, Maharashtra</Text>
                 </View>
               </View>
-              <View style={styles.middleCard}>
-                <View style={styles.middleCardItems}>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() => this.props.navigation.navigate('Order')}>
-                    <Image source={require('../../assets/order.png')} />
-                    <Text style={styles.pageText}>Order</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.middleCardItems}>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() =>
-                      this.props.navigation.navigate('EditProfile')
-                    }>
-                    <Image source={require('../../assets/editProfile.png')} />
-                    <Text style={styles.pageText}>Edit Profile</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={[styles.middleCardItems, {borderRightWidth: 0}]}>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() => this.props.navigation.navigate('Favorite')}>
-                    <Image source={require('../../assets/fav.png')} />
-                    <Text style={styles.pageText}>Favorite</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.optionsView}>
-                <View style={styles.option}>
-                  <View style={styles.img}>
-                    <Image
-                      style={{tintColor: '#EF8382'}}
-                      source={require('../../assets/tabhome.png')}
-                    />
-                  </View>
-                  <Text style={styles.text}>Home</Text>
-                </View>
-                <View style={styles.line} />
-                <View style={styles.option}>
-                  <View style={styles.img}>
-                    <Image
-                      style={{tintColor: '#EF8382'}}
-                      source={require('../../assets/taboffer.png')}
-                    />
-                  </View>
-                  <Text style={styles.text}>Offers</Text>
-                </View>
-                <View style={styles.line} />
-                <View style={styles.option}>
-                  <View style={styles.img}>
-                    <Image
-                      style={{tintColor: '#EF8382'}}
-                      source={require('../../assets/privi.png')}
-                    />
-                  </View>
-                  <Text style={styles.text}>Privicy Policy</Text>
-                </View>
-                <View style={styles.line} />
-                <View style={styles.option}>
-                  <View style={styles.img}>
-                    <Image
-                      style={{tintColor: '#EF8382'}}
-                      source={require('../../assets/terms.png')}
-                    />
-                  </View>
-                  <Text style={styles.text}>Terms And Conditions</Text>
-                </View>
-                <View style={styles.line} />
+            </View>
+            <View style={styles.middleCard}>
+              <View style={styles.middleCardItems}>
                 <TouchableOpacity
-                  onPress={() => this.logoutHandler()}
-                  style={styles.option}>
-                  <View style={styles.img}>
-                    <Image
-                      style={{tintColor: '#EF8382'}}
-                      source={require('../../assets/logout.png')}
-                    />
-                  </View>
-                  <Text style={styles.text}>Logout</Text>
+                  style={styles.btn}
+                  onPress={() => this.props.navigation.navigate('Order')}>
+                  <Image source={require('../../assets/order.png')} />
+                  <Text style={styles.pageText}>Order</Text>
                 </TouchableOpacity>
               </View>
+              <View style={styles.middleCardItems}>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => this.props.navigation.navigate('EditProfile')}>
+                  <Image source={require('../../assets/editProfile.png')} />
+                  <Text style={styles.pageText}>Edit Profile</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={[styles.middleCardItems, {borderRightWidth: 0}]}>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => this.props.navigation.navigate('Favorite')}>
+                  <Image source={require('../../assets/fav.png')} />
+                  <Text style={styles.pageText}>Favorite</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.optionsView}>
+              <View style={styles.option}>
+                <View style={styles.img}>
+                  <Image
+                    style={{tintColor: '#EF8382'}}
+                    source={require('../../assets/tabhome.png')}
+                  />
+                </View>
+                <Text style={styles.text}>Home</Text>
+              </View>
+              <View style={styles.line} />
+              <View style={styles.option}>
+                <View style={styles.img}>
+                  <Image
+                    style={{tintColor: '#EF8382'}}
+                    source={require('../../assets/taboffer.png')}
+                  />
+                </View>
+                <Text style={styles.text}>Offers</Text>
+              </View>
+              <View style={styles.line} />
+              <View style={styles.option}>
+                <View style={styles.img}>
+                  <Image
+                    style={{tintColor: '#EF8382'}}
+                    source={require('../../assets/privi.png')}
+                  />
+                </View>
+                <Text style={styles.text}>Privicy Policy</Text>
+              </View>
+              <View style={styles.line} />
+              <View style={styles.option}>
+                <View style={styles.img}>
+                  <Image
+                    style={{tintColor: '#EF8382'}}
+                    source={require('../../assets/terms.png')}
+                  />
+                </View>
+                <Text style={styles.text}>Terms And Conditions</Text>
+              </View>
+              <View style={styles.line} />
+              <TouchableOpacity
+                onPress={() => this.logoutHandler()}
+                style={styles.option}>
+                <View style={styles.img}>
+                  <Image
+                    style={{tintColor: '#EF8382'}}
+                    source={require('../../assets/logout.png')}
+                  />
+                </View>
+                <Text style={styles.text}>Logout</Text>
+              </TouchableOpacity>
             </View>
           </SafeAreaView>
         </View>
@@ -183,15 +183,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: '2%',
-    marginTop: '2%',
+    marginBottom: '1%',
+    marginTop: '1%',
   },
-  optionsView: {marginTop: '6%'},
+  optionsView: {marginTop: '6%', width},
   middleCardItems: {
-    height: '100%',
-    width: 100,
+    height: '60%',
+    width: '32%',
     borderRightWidth: 1,
     borderColor: colors.borderColor,
+    // backgroundColor: 'pink',
   },
   middleCard: {
     width: '90%',
@@ -206,8 +207,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: '5%',
     flexDirection: 'row',
-    padding: 25,
-    justifyContent: 'space-evenly',
+    // padding: 25,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   address: {
     marginLeft: '2%',
@@ -229,6 +231,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: '5%',
     flexDirection: 'row',
+    height: 140,
   },
   innerHeaderView: {
     flexDirection: 'row',

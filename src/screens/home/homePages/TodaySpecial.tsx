@@ -46,12 +46,13 @@ export class TodaySpecial extends Component {
             <Text style={styles.heading}>Today Special</Text>
           </TouchableOpacity>
         </View>
-        <SafeAreaView>
+        <SafeAreaView style={{paddingBottom: '10%'}}>
           <View style={styles.listContainer}>
             <FlatList
               data={todaySpecial}
               renderItem={this.todaySpecialList}
               keyExtractor={item => item.id}
+              // scrollEnabled={false}
             />
           </View>
         </SafeAreaView>

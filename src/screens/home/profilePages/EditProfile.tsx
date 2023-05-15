@@ -28,7 +28,9 @@ export class EditProfile extends Component {
           </TouchableOpacity>
         </View>
         <SafeAreaView style={{width}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: '10%'}}
+            showsVerticalScrollIndicator={false}>
             <View style={styles.imgView}>
               <Image source={require('../../../assets/editProimg.png')} />
               <TouchableOpacity style={styles.btn}>
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     fontSize: 20,
-    height: 45,
+    height: 60,
   },
   inputView: {width, marginTop: '5%', height: 800},
   btn: {
