@@ -12,8 +12,11 @@ import {width, height} from '../../constants/ScreenDimentions';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
 import {CartContext} from '../../GlobalState';
-
-export class Cart extends Component {
+interface CartProps {
+  navigation?: any;
+}
+interface CartState {}
+export class Cart extends Component<CartProps, CartState> {
   static contextType = CartContext;
   cartItemsList = ({item}) => {
     const {increment, decrement, deleteItem} = this.context;
@@ -64,15 +67,18 @@ export class Cart extends Component {
           <Text style={styles.heading}>Cart</Text>
         </View>
         <SafeAreaView>
-          <View style={{width, height: ios ? '70%' : '83%'}}>
+          <View style={{width, height: ios ? '82%' : '83%'}}>
             <FlatList
               data={cart}
               renderItem={this.cartItemsList}
               keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
             />
           </View>
           <View style={{width, height: 60, paddingTop: '2%'}}>
-            <TouchableOpacity style={styles.checkout}>
+            <TouchableOpacity
+              style={styles.checkout}
+              onPress={() => this.props.navigation.navigate('Checkout')}>
               <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>
           </View>
@@ -96,6 +102,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 10,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowColor: 'green',
   },
   del: {
     height: 40,

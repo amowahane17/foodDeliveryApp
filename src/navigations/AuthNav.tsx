@@ -17,6 +17,11 @@ import OfferItems from '../screens/home/homePages/OfferItems';
 import SearchLocation from '../screens/home/homePages/SearchLocation';
 import TodaySpecial from '../screens/home/homePages/TodaySpecial';
 import NearbyRestaurant from '../screens/home/homePages/NearbyRestaurant';
+import Checkout from '../screens/home/cartPages/Checkout';
+import BankAccount from '../screens/home/cartPages/BankAccount';
+import Cod from '../screens/home/cartPages/Cod';
+import CreditCard from '../screens/home/cartPages/CreditCard';
+import Upi from '../screens/home/cartPages/Upi';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +46,11 @@ export class AuthNav extends Component {
         <Stack.Screen name="SearchLocation" component={SearchLocation} />
         <Stack.Screen name="TodaySpecial" component={TodaySpecial} />
         <Stack.Screen name="NearbyRestaurant" component={NearbyRestaurant} />
+        <Stack.Screen name="Checkout" component={Checkout} />
+        <Stack.Screen name="Bank" component={BankAccount} />
+        <Stack.Screen name="Cod" component={Cod} />
+        <Stack.Screen name="Card" component={CreditCard} />
+        <Stack.Screen name="Upi" component={Upi} />
       </Stack.Navigator>
     );
   }

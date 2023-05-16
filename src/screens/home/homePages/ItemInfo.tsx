@@ -29,6 +29,7 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
       </View>
     );
   };
+
   render() {
     const paramItem = this.props.route.params.singleItem;
     console.log(paramItem);

@@ -38,6 +38,8 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
 
     if (duplicates === undefined) {
       this.setState({cartData: [...cartData, item]});
+    } else {
+      this.incrementQuantity(item);
     }
   };
   incrementQuantity = item => {
@@ -80,6 +82,7 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       ),
     });
   };
+
   render() {
     return (
       <LoginContext.Provider
