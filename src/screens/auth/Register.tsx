@@ -17,6 +17,7 @@ import OTPInputView from '@twotalltotems/react-native-otp-input';
 import SelectDropdown from 'react-native-select-dropdown';
 import {colors} from '../../constants/Colors';
 import {codeData} from '../../data/codeData';
+import firestore from '@react-native-firebase/firestore';
 interface RegisterProps {
   navigation?: any;
 }
@@ -61,6 +62,7 @@ export class Register extends Component<RegisterProps, RegisterState> {
     const isNameValid = name.length > 2 && name !== '';
     const isStateValid = _state !== '';
     let randomNum = Math.floor(1000 + Math.random() * 9000);
+
     if (tickToggle) {
       if (
         isEmailValid &&
@@ -71,14 +73,20 @@ export class Register extends Component<RegisterProps, RegisterState> {
         isNameValid &&
         isStateValid
       ) {
-        this.props.navigation.navigate('Otp', {
-          name,
-          phone: phone,
-          email: email,
-          confirmPasscode: confirmPasscode,
-          _state: _state,
-          randomNum: randomNum,
-        });
+        try {
+          const user = await firestore().collection('Users').doc(phone).get();
+          const data = user.data();
+          data?.phone === phone || data?.email === email
+            ? Alert.alert('You are already a user!')
+            : this.props.navigation.navigate('Otp', {
+                name,
+                phone: phone,
+                email: email,
+                confirmPasscode: confirmPasscode,
+                _state: _state,
+                randomNum: randomNum,
+              });
+        } catch (error) {}
       } else {
         Alert.alert('Please enter valid details');
       }
