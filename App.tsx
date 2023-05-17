@@ -2,9 +2,8 @@ import 'react-native-gesture-handler';
 import React, {Component} from 'react';
 import AuthNav from './src/navigations/AuthNav';
 import {NavigationContainer} from '@react-navigation/native';
-import PhoneSignIn from './src/PhoneAuth';
-import New from './src/New';
 import GlobalState from './src/GlobalState';
+
 interface AppProps {}
 interface AppState {}
 

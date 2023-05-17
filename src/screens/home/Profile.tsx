@@ -24,7 +24,7 @@ export class Profile extends Component<ProfileProps, ProfileState> {
     this.props.navigation.navigate('Onbording');
   };
   render() {
-    const {userInfo, loading} = this.context;
+    const {userInfo, loading, city, state} = this.context;
     if (loading) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -54,7 +54,9 @@ export class Profile extends Component<ProfileProps, ProfileState> {
                 <Text style={styles.name}>Hi, {userInfo.name}</Text>
                 <View style={styles.addressView}>
                   <Image source={require('../../assets/pin.png')} />
-                  <Text style={styles.address}>Nagpur, Maharashtra</Text>
+                  <Text style={styles.address}>
+                    {city}, {state}
+                  </Text>
                 </View>
               </View>
             </View>

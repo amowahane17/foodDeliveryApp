@@ -53,7 +53,6 @@ export class Login extends Component<LoginProps, LoginState> {
       try {
         const user = await firestore().collection('Users').doc(phone).get();
         const data = user.data();
-        console.log(data, 'this is data');
         if (data !== undefined) {
           if (data.passcode === code) {
             try {

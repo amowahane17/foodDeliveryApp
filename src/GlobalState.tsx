@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component, createContext} from 'react';
+import firestore from '@react-native-firebase/firestore';
 export interface CartItemTypes {
   img: any;
   name: string;
@@ -21,29 +22,48 @@ interface GlobalStateState {
   };
   cartData: any[];
   isLoading: boolean;
+  cityName: string;
+  stateName: string;
 }
 export const LoginContext = createContext({});
 export const CartContext = createContext({});
 export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
   constructor(props: GlobalStateProps) {
     super(props);
-    this.state = {userData: null, isLoading: true, cartData: []};
+    this.state = {
+      userData: null,
+      isLoading: true,
+      cartData: [],
+      cityName: '',
+      stateName: '',
+    };
   }
 
   getUserData = async () => {
     try {
       const userData = await AsyncStorage.getItem('USER_DATA');
       if (userData !== null) {
-        this.setState({userData: JSON.parse(userData), isLoading: false});
+        this.setState({userData: JSON.parse(userData)});
+        const user = await firestore()
+          .collection('Users')
+          .doc(this.state.userData?.phone)
+          .get();
+        const data = user.data();
+        if (data !== undefined) {
+          this.setState({
+            cityName: data.city,
+            stateName: data.state,
+            isLoading: false,
+          });
+        }
       }
     } catch (error) {
       console.log('unable to get user data', error);
     }
   };
+
   addToCart = (item: CartItemTypes) => {
     const {cartData} = this.state;
-    console.log(item, '========>');
-
     const duplicates = cartData?.find(ele => item === ele);
 
     if (duplicates === undefined) {
@@ -100,6 +120,8 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
           getUserInfo: this.getUserData,
           userInfo: this.state.userData,
           loading: this.state.isLoading,
+          city: this.state.cityName,
+          state: this.state.stateName,
         }}>
         <CartContext.Provider
           value={{

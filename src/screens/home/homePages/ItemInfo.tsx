@@ -11,6 +11,7 @@ import {ios} from '../../../constants/Platform';
 import {height, width} from '../../../constants/ScreenDimentions';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {colors} from '../../../constants/Colors';
+import {CartContext} from '../../../GlobalState';
 interface ItemInfoProps {
   route?: any;
   navigation?: any;
@@ -23,6 +24,7 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
     super(props);
     this.state = {currIndex: 0};
   }
+  static contextType?: React.Context<any> | undefined = CartContext;
   _renderItem = ({item}: {item: {img: any}}) => {
     return (
       <View style={styles.imgContainer}>
@@ -32,8 +34,8 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
   };
 
   render() {
+    const {addItemInCart} = this.context;
     const paramItem = this.props.route.params.singleItem;
-    console.log(paramItem);
 
     return (
       <SafeAreaView>
@@ -124,7 +126,9 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.cartBtn}>
+          <TouchableOpacity
+            style={styles.cartBtn}
+            onPress={() => addItemInCart(paramItem)}>
             <Text style={styles.cartText}>ADD TO CART</Text>
             <Image
               style={{marginLeft: '2%'}}

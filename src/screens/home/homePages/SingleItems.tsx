@@ -90,7 +90,7 @@ export class SingleItems extends Component<SingleItemsProps, SingleItemsState> {
               <FlatList
                 data={categoryData[index]?.items}
                 renderItem={this.categoryList}
-                // keyExtractor={item => item.id}
+                keyExtractor={item => item.id}
                 numColumns={2}
                 scrollEnabled={false}
               />

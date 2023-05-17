@@ -19,6 +19,8 @@ import {TodaySpecialTypes, todaySpecial} from '../../data/todaySpecial';
 import {RestaurantDataTypes, restaurantData} from '../../data/restaurantData';
 import {ios} from '../../constants/Platform';
 import {LoginContext, CartContext} from '../../GlobalState';
+import firestore from '@react-native-firebase/firestore';
+
 interface HomeProps {
   navigation?: any;
 }
@@ -155,7 +157,7 @@ export class Home extends Component<HomeProps, HomeState> {
     );
   };
   render() {
-    const {userInfo, loading} = this.context;
+    const {userInfo, loading, city, state} = this.context;
     if (loading) {
       return (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -190,20 +192,22 @@ export class Home extends Component<HomeProps, HomeState> {
                         this.props.navigation.navigate('SearchLocation')
                       }
                       style={styles.city}>
-                      Nagpur, Maharashtra
+                      {city}, {state}
                     </Text>
                   </View>
                 </View>
-                <Image
-                  style={styles.bellImg}
-                  source={require('../../assets/bell.png')}
-                />
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Image
+                    style={styles.bellImg}
+                    source={require('../../assets/bell.png')}
+                  />
+                </View>
               </View>
               <View style={styles.itemView}>
                 <FlatList
                   data={itemsData}
                   renderItem={this.itemsList}
-                  // keyExtractor={item => item.id}
+                  keyExtractor={item => item.id}
                   horizontal
                   showsHorizontalScrollIndicator={false}
                 />
@@ -489,12 +493,14 @@ const styles = StyleSheet.create({
     width,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   profileImg: {marginLeft: '5%'},
   personName: {
+    fontFamily: 'MontserratAlternates-Regular',
     marginBottom: '5%',
     fontSize: 20,
-    fontWeight: 'bold',
+    // fontWeight: '',
     color: '#161A1D',
   },
   hTextView: {flexDirection: 'row', alignItems: 'center'},

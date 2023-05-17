@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/BaiJamjuree-Regular.ttf",
+      "sha1": "a7f5bfd86134a2430e69e9c516036b9191fed0e8"
+    },
+    {
+      "path": "src/assets/fonts/MontserratAlternates-Regular.ttf",
+      "sha1": "aa14147c4e41b8126868f4fe3d75bdc406d332b0"
+    }
+  ]
+}
