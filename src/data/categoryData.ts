@@ -1,3 +1,23 @@
+export interface CategoryDataTypes {
+  id: string;
+  mainImg: any;
+  name: string;
+  sColor: string;
+  color: string;
+  items: {
+    id: string;
+    name: string;
+    price: number;
+    off_price: number;
+    img: any;
+    quantity: number;
+    display_images: {
+      id: string;
+      img: any;
+    }[];
+    color: string;
+  }[];
+}
 export const categoryData = [
   {
     id: '20',

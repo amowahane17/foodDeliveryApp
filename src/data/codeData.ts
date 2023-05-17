@@ -1,3 +1,9 @@
+export interface CodeDataTypes {
+  id: string;
+  name: string;
+  code: string;
+  img: any;
+}
 export const codeData = [
   {id: '92', name: 'India', code: '+91', img: require('../assets/india.png')},
   {id: '93', name: 'Canada', code: '+1', img: require('../assets/canada.png')},

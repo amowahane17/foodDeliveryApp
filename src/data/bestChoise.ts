@@ -6,6 +6,7 @@ export interface BestChoiseTypes {
   price: string;
   color: string;
   sColor: string;
+  quantity: number;
 }
 
 export const bestChoise = [

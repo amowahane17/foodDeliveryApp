@@ -11,14 +11,14 @@ import {
 import {width, height} from '../../constants/ScreenDimentions';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
-import {CartContext} from '../../GlobalState';
+import {CartContext, CartItemTypes} from '../../GlobalState';
 interface CartProps {
   navigation?: any;
 }
 interface CartState {}
 export class Cart extends Component<CartProps, CartState> {
   static contextType = CartContext;
-  cartItemsList = ({item}) => {
+  cartItemsList = ({item}: {item: CartItemTypes}) => {
     const {increment, decrement, deleteItem} = this.context;
     return (
       <View style={styles.cartCard}>
@@ -59,7 +59,6 @@ export class Cart extends Component<CartProps, CartState> {
   };
   render() {
     const {cart} = this.context;
-    console.log(cart, 'this is cart');
 
     return (
       <View style={styles.container}>

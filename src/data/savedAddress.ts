@@ -1,3 +1,8 @@
+export interface SavedAddressTypes {
+  id: string;
+  res_name: string;
+  address: string;
+}
 export const savedAddress = [
   {
     id: '128',

@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component, createContext} from 'react';
+export interface CartItemTypes {
+  img: any;
+  name: string;
+  off_price?: number;
+  quantity: number;
+  id: string;
+  price: number;
+}
 interface GlobalStateProps {
   children: any;
 }
@@ -32,8 +40,10 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       console.log('unable to get user data', error);
     }
   };
-  addToCart = item => {
+  addToCart = (item: CartItemTypes) => {
     const {cartData} = this.state;
+    console.log(item, '========>');
+
     const duplicates = cartData?.find(ele => item === ele);
 
     if (duplicates === undefined) {
@@ -42,7 +52,7 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       this.incrementQuantity(item);
     }
   };
-  incrementQuantity = item => {
+  incrementQuantity = (item: CartItemTypes) => {
     this.setState({
       cartData: this.state.cartData.map(ele => {
         if (ele.id === item.id) {
@@ -55,7 +65,7 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       }),
     });
   };
-  decrementQuantity = item => {
+  decrementQuantity = (item: CartItemTypes) => {
     this.setState({
       cartData: this.state.cartData.map(ele => {
         if (ele.id === item.id && item.quantity > 1) {
@@ -70,7 +80,7 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       }),
     });
   };
-  deleteCartItem = id => {
+  deleteCartItem = (id: string) => {
     this.setState({
       cartData: this.state.cartData.filter(
         ele => {

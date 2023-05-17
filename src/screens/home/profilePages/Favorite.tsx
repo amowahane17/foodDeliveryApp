@@ -9,8 +9,11 @@ import {
 } from 'react-native';
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
-
-export class Favorite extends Component {
+interface FavoriteProps {
+  navigation?: any;
+}
+interface FavoriteState {}
+export class Favorite extends Component<FavoriteProps, FavoriteState> {
   render() {
     return (
       <View style={styles.container}>

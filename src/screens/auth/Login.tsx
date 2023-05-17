@@ -16,7 +16,7 @@ import {height, width} from '../../constants/ScreenDimentions';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import {ios} from '../../constants/Platform';
 import {colors} from '../../constants/Colors';
-import {codeData} from '../../data/codeData';
+import {CodeDataTypes, codeData} from '../../data/codeData';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 interface LoginProps {
@@ -28,7 +28,7 @@ interface LoginState {
   code: string;
   codeModalToggle: boolean;
   selectedIndex: null | number;
-  filterData: any[];
+  filterData: CodeDataTypes[];
 }
 export class Login extends Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {

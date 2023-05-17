@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  SafeAreaView,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
 import OTPInputView from '@twotalltotems/react-native-otp-input';

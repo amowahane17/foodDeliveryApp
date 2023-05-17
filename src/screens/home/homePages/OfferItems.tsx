@@ -12,10 +12,15 @@ import {
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import {CartContext} from '../../../GlobalState';
-
-export class OfferItems extends Component {
+import {BestChoiseTypes} from '../../../data/bestChoise';
+interface OfferItemsProps {
+  route?: any;
+  navigation?: any;
+}
+interface OfferItemsState {}
+export class OfferItems extends Component<OfferItemsProps, OfferItemsState> {
   static contextType = CartContext;
-  itemList = ({item}) => {
+  itemList = ({item}: {item: BestChoiseTypes}) => {
     const {addItemInCart} = this.context;
     return (
       <View style={[styles.bestChoiseCards, {backgroundColor: item.color}]}>

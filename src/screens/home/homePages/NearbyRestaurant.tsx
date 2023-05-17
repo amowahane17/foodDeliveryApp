@@ -13,10 +13,13 @@ import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {colors} from '../../../constants/Colors';
-import {itemsData} from '../../../data/itemsData';
-import {bestChoise} from '../../../data/bestChoise';
-import {todaySpecial} from '../../../data/todaySpecial';
-interface NearbyRestaurantProps {}
+import {BestChoiseTypes} from '../../../data/bestChoise';
+import {CartContext} from '../../../GlobalState';
+
+interface NearbyRestaurantProps {
+  navigation?: any;
+  route?: any;
+}
 interface NearbyRestaurantState {
   currIndex: number;
 }
@@ -28,10 +31,15 @@ export class NearbyRestaurant extends Component<
     super(props);
     this.state = {currIndex: 0};
   }
-  carousel = ({item}) => {
+  static contextType?: React.Context<any> | undefined = CartContext;
+  carousel = ({item}: {item: {id: string; img: any}}) => {
     return <Image source={item.img} />;
   };
-  category = ({item}) => {
+  category = ({
+    item,
+  }: {
+    item: {id: string; color: string; name: string; img: any};
+  }) => {
     return (
       <>
         <TouchableOpacity
@@ -45,13 +53,10 @@ export class NearbyRestaurant extends Component<
       </>
     );
   };
-  bestChoise = ({item, index}) => {
+  bestChoise = ({item}: {item: BestChoiseTypes}) => {
+    const {addItemInCart} = this.context;
     return (
-      <View
-        // onPress={() =>
-        //   this.props.navigation.navigate('ItemInfo', {singleItem: item})
-        // }
-        style={styles.cards}>
+      <View style={styles.cards}>
         <Image style={styles.img} source={item.img} />
         <View style={styles.cardMiddleView}>
           <Text style={styles.name}>{item.name}</Text>
@@ -59,7 +64,9 @@ export class NearbyRestaurant extends Component<
             ₹{item.price}
           </Text>
         </View>
-        <TouchableOpacity style={styles.circle}>
+        <TouchableOpacity
+          onPress={() => addItemInCart(item)}
+          style={styles.circle}>
           <Image
             style={styles.plus}
             source={require('../../../assets/plus.png')}
@@ -68,19 +75,15 @@ export class NearbyRestaurant extends Component<
       </View>
     );
   };
-  todaySpecialList = ({item}) => {
+  todaySpecialList = ({
+    item,
+  }: {
+    item: {id: string; img: any; name: string; price: number};
+  }) => {
     return (
       <>
         <View style={styles.todaySpecialCards}>
-          <Image
-            style={{
-              height: 106,
-              borderTopLeftRadius: 15,
-              borderBottomLeftRadius: 15,
-              width: '40%',
-            }}
-            source={item.img}
-          />
+          <Image style={styles.timg} source={item.img} />
           <View style={styles.tView}>
             <Text style={styles.tName}>{item.name}</Text>
             <Text style={styles.tPrice}>₹{item.price}</Text>
@@ -89,7 +92,11 @@ export class NearbyRestaurant extends Component<
       </>
     );
   };
-  teamList = ({item}) => {
+  teamList = ({
+    item,
+  }: {
+    item: {id: string; img: any; name: string; deg: string};
+  }) => {
     return (
       <View style={styles.teamCard}>
         <Image style={styles.perImg} source={item.img} />
@@ -100,7 +107,7 @@ export class NearbyRestaurant extends Component<
       </View>
     );
   };
-  gallery = ({item}) => {
+  gallery = ({item}: {item: {img: any; id: string}}) => {
     return (
       <Image
         style={{marginTop: '2.5%', marginLeft: 20, marginBottom: '2.5%'}}
@@ -206,18 +213,14 @@ export class NearbyRestaurant extends Component<
                 <FlatList
                   data={resData.bestChoise}
                   renderItem={this.bestChoise}
-                  // keyExtractor={item => item.id}
+                  keyExtractor={item => item.id}
                   horizontal
                 />
               </View>
               <View style={styles.todaySpecial}>
                 <View style={styles.todayTexts}>
                   <Text style={styles.bestText}>Today Special</Text>
-                  <TouchableOpacity
-                    // onPress={() =>
-                    //   this.props.navigation.navigate('TodaySpecial')
-                    // }
-                    style={styles.innerTexts}>
+                  <TouchableOpacity style={styles.innerTexts}>
                     <Text style={styles.viewAll}>View All</Text>
                     <Image
                       source={require('../../../assets/greenRightArrow.png')}
@@ -263,6 +266,12 @@ export class NearbyRestaurant extends Component<
   }
 }
 const styles = StyleSheet.create({
+  timg: {
+    height: 106,
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
+    width: '40%',
+  },
   gallery: {
     marginTop: '5%',
     marginBottom: '20%',

@@ -14,11 +14,19 @@ import {height, width} from '../../../constants/ScreenDimentions';
 import {colors} from '../../../constants/Colors';
 import {categoryData} from '../../../data/categoryData';
 import {CartContext} from '../../../GlobalState';
-
-export class SingleItems extends Component {
+interface SingleItemsProps {
+  route?: any;
+  navigation?: any;
+}
+interface SingleItemsState {}
+export class SingleItems extends Component<SingleItemsProps, SingleItemsState> {
   static contextType = CartContext;
 
-  categoryList = ({item, index}) => {
+  categoryList = ({
+    item,
+  }: {
+    item: {id: string; img: any; name: string; price: number};
+  }) => {
     const {catItem} = this.props.route.params;
     console.log(catItem, 'catItem');
 

@@ -1,6 +1,19 @@
 export interface CarouselDataTypes {
   id: string;
   img: any;
+  background_image: any;
+  text: string;
+  off_img: any;
+  item_data: {
+    id: string;
+    img: any;
+    name: string;
+    restaurent: string;
+    price: string;
+    color: string;
+    sColor: string;
+    quantity: number;
+  }[];
 }
 
 export const carouselData = [

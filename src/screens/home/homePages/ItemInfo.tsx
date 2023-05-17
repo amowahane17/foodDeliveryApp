@@ -13,6 +13,7 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {colors} from '../../../constants/Colors';
 interface ItemInfoProps {
   route?: any;
+  navigation?: any;
 }
 interface ItemInfoState {
   currIndex: number;
@@ -22,7 +23,7 @@ export class ItemInfo extends Component<ItemInfoProps, ItemInfoState> {
     super(props);
     this.state = {currIndex: 0};
   }
-  _renderItem = ({item}) => {
+  _renderItem = ({item}: {item: {img: any}}) => {
     return (
       <View style={styles.imgContainer}>
         <Image source={item.img} />

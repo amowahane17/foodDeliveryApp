@@ -7,13 +7,16 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
 import {ios} from '../../../constants/Platform';
 import {height, width} from '../../../constants/ScreenDimentions';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import {ScrollView} from 'react-native-gesture-handler';
-
-export class EditProfile extends Component {
+interface EditProfileProps {
+  navigation?: any;
+}
+interface EditProfileState {}
+export class EditProfile extends Component<EditProfileProps, EditProfileState> {
   render() {
     return (
       <View style={styles.container}>

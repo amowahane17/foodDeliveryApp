@@ -11,7 +11,11 @@ import {
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import {colors} from '../../../constants/Colors';
-export class Order extends Component {
+interface OrderProps {
+  navigation?: any;
+}
+interface OrderState {}
+export class Order extends Component<OrderProps, OrderState> {
   render() {
     return (
       <View style={styles.container}>

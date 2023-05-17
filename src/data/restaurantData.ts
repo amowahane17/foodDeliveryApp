@@ -78,6 +78,7 @@ export const restaurantData = [
         price: '90',
         color: '#FFF3E5',
         sColor: 'orange',
+        quantity: 1,
       },
       {
         id: '118',
@@ -87,6 +88,7 @@ export const restaurantData = [
         price: '150',
         color: '#FFE5E5',
         sColor: 'pink',
+        quantity: 1,
       },
       {
         id: '119',
@@ -97,6 +99,7 @@ export const restaurantData = [
         price: '90',
         color: '#FFF3E5',
         sColor: 'orange',
+        quantity: 1,
       },
     ],
     todaySpecial: [

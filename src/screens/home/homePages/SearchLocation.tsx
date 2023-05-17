@@ -11,9 +11,17 @@ import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import {FlatList, ScrollView, TextInput} from 'react-native-gesture-handler';
 import {colors} from '../../../constants/Colors';
-import {savedAddress} from '../../../data/savedAddress';
-export class SearchLocation extends Component {
-  addressList = ({item}) => {
+import {SavedAddressTypes, savedAddress} from '../../../data/savedAddress';
+interface SearchLocationProps {
+  route?: any;
+  navigation?: any;
+}
+interface SearchLocationState {}
+export class SearchLocation extends Component<
+  SearchLocationProps,
+  SearchLocationState
+> {
+  addressList = ({item}: {item: SavedAddressTypes}) => {
     return (
       <View style={styles.cards}>
         <Image
