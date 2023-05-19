@@ -7,16 +7,133 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import {colors} from '../../../constants/Colors';
+import {CartContext} from '../../../GlobalState';
+
 interface OrderProps {
   navigation?: any;
 }
 interface OrderState {}
 export class Order extends Component<OrderProps, OrderState> {
+  static contextType?: React.Context<any> | undefined = CartContext;
+  list = ({item}) => {
+    return (
+      <>
+        <View style={styles.orderInfo}>
+          <View style={{width: '70%'}}>
+            <Text style={styles.orderId}>Order# {item.paymentId}</Text>
+            <Text style={styles.date}>{item.date}</Text>
+          </View>
+          <View style={{width: '30%'}}>
+            <Text style={styles.track}>Track Order</Text>
+          </View>
+        </View>
+        <View style={styles.orderItemsView}>
+          <Text style={styles.ordertext}>Ordered Items</Text>
+          <FlatList
+            data={item.items}
+            renderItem={this.orderedItems}
+            keyExtractor={items => items.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <View style={styles.billView}>
+          <View style={styles.billInfo}>
+            <Text style={[styles.billText, {color: colors.black}]}>
+              Total Bill
+            </Text>
+            <Text style={[styles.billText, {color: colors.black}]}>
+              ₹{item.totalBill}
+            </Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.billInfo}>
+            <Text style={styles.billText}>Delivery Charge</Text>
+            <Text style={styles.billText}>₹0.00</Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.billInfo}>
+            <Text style={styles.billText}>Packing Charge</Text>
+            <Text style={styles.billText}>₹9</Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.billInfo}>
+            <Text style={styles.billText}>Tax Amount(5.0%)</Text>
+            <Text style={styles.billText}>₹15</Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.billInfo}>
+            <Text style={styles.billText}>Total Discount</Text>
+            <Text style={styles.billText}>₹0.00</Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.billInfo}>
+            <Text style={[styles.billText, {color: colors.black}]}>
+              Grand Total
+            </Text>
+            <Text style={[styles.billText, {color: 'red'}]}>
+              ₹{item.grandTotal}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.restaurantDetails}>
+          <Text style={styles.ordertext}>Restaurant Details</Text>
+          <View style={styles.imgView}>
+            <Image
+              style={styles.imgs}
+              source={require('../../../assets/img.jpeg')}
+            />
+          </View>
+          <View style={styles.resName}>
+            <Text style={styles.bestName}>Golden Fish Restaurant</Text>
+            <View style={styles.resMiddleView}>
+              <View style={styles.kmView}>
+                <Image
+                  style={styles.resPin}
+                  source={require('../../../assets/pin.png')}
+                />
+                <Text style={styles.resKm}>2.5km</Text>
+              </View>
+              <View style={styles.resBottomView}>
+                <Image
+                  style={styles.star}
+                  source={require('../../../assets/star.png')}
+                />
+              </View>
+            </View>
+            <Text style={[styles.tRes, {fontSize: 16}]}>
+              Manish Nagar, Ingole Nagar, Sonegaon, Nagpur
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{height: 15, width, backgroundColor: colors.borderColor}}
+        />
+      </>
+    );
+  };
+  orderedItems = ({item}) => {
+    return (
+      <>
+        <View style={styles.orderCard}>
+          <Image style={styles.img} source={item.img} />
+          <View style={styles.innerCardView}>
+            <Text style={styles.text}>{item.name}</Text>
+            <Text style={styles.price}>₹{item.price}</Text>
+          </View>
+        </View>
+      </>
+    );
+  };
   render() {
+    const {orderData} = this.context;
+    console.log(orderData);
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -30,96 +147,15 @@ export class Order extends Component<OrderProps, OrderState> {
           </TouchableOpacity>
         </View>
         <SafeAreaView style={{width}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.orderInfo}>
-              <View style={{width: '70%'}}>
-                <Text style={styles.orderId}>Order# ORDO00003</Text>
-                <Text style={styles.date}>25 March, 03:25 PM</Text>
-              </View>
-              <View style={{width: '30%'}}>
-                <Text style={styles.track}>Track Order</Text>
-              </View>
-            </View>
-            <View style={styles.orderItemsView}>
-              <Text style={styles.ordertext}>Ordered Items</Text>
-              <View style={styles.orderCard}>
-                <Image
-                  style={styles.img}
-                  source={require('../../../assets/burgerWithShadow.png')}
-                />
-                <View style={styles.innerCardView}>
-                  <Text style={styles.text}>Hamburger</Text>
-                  <Text style={styles.price}>₹100</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.billView}>
-              <View style={styles.billInfo}>
-                <Text style={[styles.billText, {color: colors.black}]}>
-                  Total Bill
-                </Text>
-                <Text style={[styles.billText, {color: colors.black}]}>
-                  ₹300
-                </Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.billInfo}>
-                <Text style={styles.billText}>Delivery Charge</Text>
-                <Text style={styles.billText}>₹0.00</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.billInfo}>
-                <Text style={styles.billText}>Packing Charge</Text>
-                <Text style={styles.billText}>₹9</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.billInfo}>
-                <Text style={styles.billText}>Tax Amount(5.0%)</Text>
-                <Text style={styles.billText}>₹15</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.billInfo}>
-                <Text style={styles.billText}>Total Discount</Text>
-                <Text style={styles.billText}>₹0.00</Text>
-              </View>
-              <View style={styles.line} />
-              <View style={styles.billInfo}>
-                <Text style={[styles.billText, {color: colors.black}]}>
-                  Grand Total
-                </Text>
-                <Text style={[styles.billText, {color: 'red'}]}>₹324</Text>
-              </View>
-            </View>
-            <View style={styles.restaurantDetails}>
-              <Text style={styles.ordertext}>Restaurant Details</Text>
-              <View style={styles.imgView}>
-                <Image
-                  style={styles.imgs}
-                  source={require('../../../assets/img.jpeg')}
-                />
-              </View>
-              <View style={styles.resName}>
-                <Text style={styles.bestName}>Golden Fish Restaurant</Text>
-                <View style={styles.resMiddleView}>
-                  <View style={styles.kmView}>
-                    <Image
-                      style={styles.resPin}
-                      source={require('../../../assets/pin.png')}
-                    />
-                    <Text style={styles.resKm}>2.5km</Text>
-                  </View>
-                  <View style={styles.resBottomView}>
-                    <Image
-                      style={styles.star}
-                      source={require('../../../assets/star.png')}
-                    />
-                  </View>
-                </View>
-                <Text style={[styles.tRes, {fontSize: 16}]}>
-                  Manish Nagar, Ingole Nagar, Sonegaon, Nagpur
-                </Text>
-              </View>
-            </View>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: '20%'}}
+            showsVerticalScrollIndicator={false}>
+            <FlatList
+              data={orderData}
+              renderItem={this.list}
+              keyExtractor={item => item.id}
+              scrollEnabled={false}
+            />
           </ScrollView>
         </SafeAreaView>
         <TouchableOpacity style={styles.call}>
@@ -176,7 +212,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   imgView: {height: 180, width: 300},
-  restaurantDetails: {marginTop: '8%', width, height: 500},
+  restaurantDetails: {
+    marginTop: '8%',
+    width,
+    height: 350,
+  },
   line: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderColor,
@@ -214,6 +254,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderColor,
     marginLeft: 20,
+    marginRight: 10,
     flexDirection: 'row',
   },
   orderItemsView: {marginTop: '6%', width},
@@ -237,7 +278,7 @@ const styles = StyleSheet.create({
   },
   orderId: {
     color: colors.black,
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '600',
   },
   orderInfo: {

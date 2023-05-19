@@ -9,11 +9,12 @@ import {
   Modal,
   FlatList,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {height, width} from '../../../constants/ScreenDimentions';
 import {ios} from '../../../constants/Platform';
 import {colors} from '../../../constants/Colors';
-import {CartContext} from '../../../GlobalState';
+import {CartContext, CartItemTypes} from '../../../GlobalState';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {payTypes} from '../../../data/payTypes';
 
@@ -149,7 +150,7 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
       </View>
     );
   };
-  paymentContinueHandler = () => {
+  paymentContinueHandler = (grandTotal, total) => {
     const {isBank, isCod, isCreditCard, isUpi} = this.state;
     const {navigate} = this.props.navigation;
     isBank
@@ -159,7 +160,7 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
       : isCreditCard
       ? navigate('Card')
       : isUpi
-      ? navigate('Upi')
+      ? navigate('Upi', {gTotal: grandTotal, total: total})
       : null;
     this.setState({checkoutToggle: false});
   };
@@ -195,9 +196,18 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
       isUpi: false,
     });
   };
+  afterBillContinue = value => {
+    value !== 0
+      ? this.setState({checkoutToggle: true})
+      : Alert.alert('Please Add Items To Continue');
+  };
   render() {
     const {cart} = this.context;
     const {isBank, isCod, isCreditCard, isUpi} = this.state;
+    const value = cart.reduce((total: number, element: CartItemTypes) => {
+      return (total + element.price) * element.quantity;
+    }, 0);
+    const grandTotal = value + 9 + 15 - 30;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -216,12 +226,23 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
             contentContainerStyle={{paddingBottom: '30%'}}>
             <View style={styles.orderItemDetails}>
               <Text style={styles.text}>Order Item Details</Text>
-              <FlatList
-                data={cart}
-                renderItem={this.itemsList}
-                keyExtractor={item => item.id}
-                scrollEnabled={false}
-              />
+              {cart.length > 0 ? (
+                <FlatList
+                  data={cart}
+                  renderItem={this.itemsList}
+                  keyExtractor={item => item.id}
+                  scrollEnabled={false}
+                />
+              ) : (
+                <Text style={styles.noitemText}>
+                  No Items!{' '}
+                  <Text
+                    style={{color: colors.lime}}
+                    onPress={() => this.props.navigation.navigate('Home')}>
+                    Add
+                  </Text>
+                </Text>
+              )}
             </View>
             <View style={styles.devider} />
             <View style={styles.couponOnCode}>
@@ -242,7 +263,7 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
                   Total Bill
                 </Text>
                 <Text style={[styles.billText, {color: colors.black}]}>
-                  ₹300
+                  ₹{value}
                 </Text>
               </View>
               <View style={styles.line} />
@@ -275,7 +296,9 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
                 <Text style={[styles.billText, {color: colors.black}]}>
                   Grand Total
                 </Text>
-                <Text style={[styles.billText, {color: 'red'}]}>₹324</Text>
+                <Text style={[styles.billText, {color: 'red'}]}>
+                  ₹{value !== 0 ? grandTotal : 0}
+                </Text>
               </View>
             </View>
             <View style={styles.devider} />
@@ -295,7 +318,7 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
             </View>
             <TouchableOpacity
               style={styles.btn}
-              onPress={() => this.setState({checkoutToggle: true})}>
+              onPress={() => this.afterBillContinue(value)}>
               <Text style={styles.continueText}>Continue</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -395,14 +418,12 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View
-                  style={{
-                    width: '100%',
-                    marginTop: '5%',
-                  }}>
+                <View style={styles.continueView}>
                   <TouchableOpacity
                     style={styles.btn}
-                    onPress={() => this.paymentContinueHandler()}>
+                    onPress={() =>
+                      this.paymentContinueHandler(grandTotal, value)
+                    }>
                     <Text style={styles.continueText}>Continue</Text>
                   </TouchableOpacity>
                 </View>
@@ -415,6 +436,16 @@ export class Checkout extends Component<CheckoutProps, CheckoutState> {
   }
 }
 const styles = StyleSheet.create({
+  continueView: {
+    width: '100%',
+    marginTop: '5%',
+  },
+  noitemText: {
+    alignSelf: 'center',
+    marginTop: '5%',
+    color: colors.black,
+    fontSize: 20,
+  },
   payTextView: {width: '50%', paddingTop: '4%'},
   payImgView: {
     width: '30%',

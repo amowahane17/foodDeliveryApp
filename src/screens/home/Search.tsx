@@ -6,28 +6,66 @@ import {
   Text,
   View,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import {height, width} from '../../constants/ScreenDimentions';
+import {colors} from '../../constants/Colors';
+import {FlatList} from 'react-native-gesture-handler';
+import {todaySpecial} from '../../data/todaySpecial';
 
-export class Search extends Component {
+interface SearchProps {}
+interface SearchState {
+  searchText: string;
+  filteredData: any[];
+}
+export class Search extends Component<SearchProps, SearchState> {
+  constructor(props: SearchProps) {
+    super(props);
+    this.state = {filteredData: [], searchText: ''};
+  }
+  searchHandler = (text: string) => {
+    this.setState({
+      searchText: text,
+      filteredData: todaySpecial.filter(element => {
+        return element.name
+          .toLocaleLowerCase()
+          .includes(text.toLocaleLowerCase());
+      }),
+    });
+  };
+  searchList = ({item}) => {
+    return (
+      <View style={styles.searchCards}>
+        <Image style={styles.img} source={item.img} />
+        <View style={styles.nameView}>
+          <Text style={styles.name}>{item.name}</Text>
+        </View>
+      </View>
+    );
+  };
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
           <View style={styles.searchView}>
             <Image
-              style={{position: 'absolute', zIndex: 1, left: '10%'}}
+              style={styles.imgOne}
               source={require('../../assets/search.png')}
             />
             <TextInput
               placeholder="Search"
               placeholderTextColor="#161A1D"
               style={styles.searchBar}
+              value={this.state.searchText}
+              onChangeText={event => this.searchHandler(event)}
             />
-            <Image
-              style={{position: 'absolute', zIndex: 1, right: '10%'}}
-              source={require('../../assets/cross.png')}
-            />
+            {this.state.searchText !== '' && (
+              <TouchableOpacity
+                onPress={() => this.setState({searchText: ''})}
+                style={styles.imgTwo}>
+                <Image source={require('../../assets/cross.png')} />
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.historyView}>
             <Text style={styles.text}>History</Text>
@@ -50,15 +88,13 @@ export class Search extends Component {
             </View>
           </View>
           <View style={{marginTop: '6%'}}>
-            <View style={styles.searchCards}>
-              <Image
-                style={styles.img}
-                source={require('../../assets/todayPizza.png')}
-              />
-              <View style={styles.nameView}>
-                <Text style={styles.name}>Pizza</Text>
-              </View>
-            </View>
+            <FlatList
+              data={
+                this.state.searchText !== '' ? this.state.filteredData : null
+              }
+              renderItem={this.searchList}
+              keyExtractor={item => item.id}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -66,6 +102,8 @@ export class Search extends Component {
   }
 }
 const styles = StyleSheet.create({
+  imgTwo: {position: 'absolute', zIndex: 1, right: '10%'},
+  imgOne: {position: 'absolute', zIndex: 1, left: '10%'},
   name: {color: '#161A1D', fontSize: 18, fontWeight: '600'},
   nameView: {
     width: '70%',
@@ -128,6 +166,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingLeft: '15%',
     paddingRight: '10%',
+    color: colors.black,
   },
   searchView: {
     height: 80,

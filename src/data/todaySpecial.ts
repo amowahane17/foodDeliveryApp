@@ -43,7 +43,7 @@ export const todaySpecial = [
   {
     id: '136',
     img: require('../assets/biryani.png'),
-    name: 'Best Veg Dum Biryani',
+    name: 'Veg Pulao',
     price: 100,
     offPrice: 200,
     restaurant: 'Golden Fish Restaurant',

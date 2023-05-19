@@ -59,34 +59,50 @@ export class Cart extends Component<CartProps, CartState> {
   };
   render() {
     const {cart} = this.context;
-
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.heading}>Cart</Text>
         </View>
         <SafeAreaView>
-          <View style={{width, height: ios ? '82%' : '83%'}}>
-            <FlatList
-              data={cart}
-              renderItem={this.cartItemsList}
-              keyExtractor={item => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-          <View style={{width, height: 60, paddingTop: '2%'}}>
-            <TouchableOpacity
-              style={styles.checkout}
-              onPress={() => this.props.navigation.navigate('Checkout')}>
-              <Text style={styles.checkoutText}>Checkout</Text>
-            </TouchableOpacity>
-          </View>
+          {cart.length > 0 ? (
+            <>
+              <View style={styles.flatView}>
+                <FlatList
+                  data={cart}
+                  renderItem={this.cartItemsList}
+                  keyExtractor={item => item.id}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+              <View style={styles.btnView}>
+                <TouchableOpacity
+                  style={styles.checkout}
+                  onPress={() => this.props.navigation.navigate('Checkout')}>
+                  <Text style={styles.checkoutText}>Checkout</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <View style={styles.conView}>
+              <Text style={styles.cartEmpty}>Cart Is Empty!</Text>
+            </View>
+          )}
         </SafeAreaView>
       </View>
     );
   }
 }
 const styles = StyleSheet.create({
+  flatView: {width, height: ios ? '82%' : '83%'},
+  btnView: {width, height: 60, paddingTop: '2%'},
+  cartEmpty: {fontSize: 20, fontWeight: '600', color: colors.black},
+  conView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width,
+    height: '90%',
+  },
   qNum: {
     color: colors.black,
     fontSize: 18,
