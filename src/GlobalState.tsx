@@ -24,6 +24,7 @@ interface GlobalStateState {
   isLoading: boolean;
   cityName: string;
   stateName: string;
+  orderHistory: any[];
 }
 export const LoginContext = createContext({});
 export const CartContext = createContext({});
@@ -36,9 +37,21 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
       cartData: [],
       cityName: '',
       stateName: '',
+      orderHistory: [],
     };
   }
-
+  updateInFirestore = cartValue => {
+    firestore()
+      .collection('Users')
+      .doc(this.state.userData?.phone)
+      .update({
+        cart: cartValue,
+      })
+      .then(() => {
+        console.log('User updated!');
+      })
+      .catch(error => console.log(error, 'update failed'));
+  };
   getUserData = async () => {
     try {
       const userData = await AsyncStorage.getItem('USER_DATA');
@@ -62,57 +75,64 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
     }
   };
 
-  addToCart = (item: CartItemTypes) => {
+  addToCart = async (item: CartItemTypes) => {
     const {cartData} = this.state;
-    const duplicates = cartData?.find(ele => item === ele);
-
+    const duplicates = cartData.find(ele => item === ele);
     if (duplicates === undefined) {
-      this.setState({cartData: [...cartData, item]});
-    } else {
-      this.incrementQuantity(item);
+      const cartValue = [...cartData, item];
+      this.setState({cartData: cartValue});
+      this.updateInFirestore(cartValue);
     }
   };
   incrementQuantity = (item: CartItemTypes) => {
-    this.setState({
-      cartData: this.state.cartData.map(ele => {
-        if (ele.id === item.id) {
-          return {
-            ...ele,
-            quantity: item.quantity + 1,
-          };
-        }
-        return ele;
-      }),
+    const incrementValue = this.state.cartData.map(ele => {
+      if (ele.id === item.id) {
+        return {
+          ...ele,
+          quantity: item.quantity + 1,
+        };
+      }
+      return ele;
     });
+    this.setState({
+      cartData: incrementValue,
+    });
+    this.updateInFirestore(incrementValue);
   };
   decrementQuantity = (item: CartItemTypes) => {
-    this.setState({
-      cartData: this.state.cartData.map(ele => {
-        if (ele.id === item.id && item.quantity > 1) {
-          return {
-            ...ele,
-            quantity: item.quantity - 1,
-          };
-        } else if (item.quantity < 2) {
-          this.deleteCartItem(item.id);
-        }
-        return ele;
-      }),
+    const decValue = this.state.cartData.map(ele => {
+      if (ele.id === item.id && item.quantity > 1) {
+        return {
+          ...ele,
+          quantity: item.quantity - 1,
+        };
+      } else if (item.quantity < 2) {
+        this.deleteCartItem(item.id);
+      }
+      return ele;
     });
+    this.setState({
+      cartData: decValue,
+    });
+    this.updateInFirestore(decValue);
   };
   deleteCartItem = (id: string) => {
-    this.setState({
-      cartData: this.state.cartData.filter(
-        ele => {
-          return ele.id !== id;
-        },
-        () => {
-          console.log({state: this.state.cartData});
-        },
-      ),
+    const delValue = this.state.cartData.filter(ele => {
+      return ele.id !== id;
     });
+    this.setState({
+      cartData: delValue,
+    });
+    this.updateInFirestore(delValue);
   };
-
+  orderHistoryHandler = item => {
+    const orderValue = [...this.state.orderHistory, item];
+    this.setState({orderHistory: orderValue});
+  };
+  paySuccess = () => {
+    this.setState({cartData: []});
+    this.updateInFirestore([]);
+  };
   render() {
     return (
       <LoginContext.Provider
@@ -125,11 +145,15 @@ export class GlobalState extends Component<GlobalStateProps, GlobalStateState> {
         }}>
         <CartContext.Provider
           value={{
+            userInfo: this.state.userData,
             cart: this.state.cartData,
             addItemInCart: this.addToCart,
             increment: this.incrementQuantity,
             decrement: this.decrementQuantity,
             deleteItem: this.deleteCartItem,
+            orderHistory: this.orderHistoryHandler,
+            orderData: this.state.orderHistory,
+            clearCart: this.paySuccess,
           }}>
           {this.props.children}
         </CartContext.Provider>
